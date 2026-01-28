@@ -1,0 +1,14 @@
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\App.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\dao\ProductDao.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\db\Db.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\model\EntradaItem.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\model\Product.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\service\StockService.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\ui\ExpiryView.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\ui\ImportExportView.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\ui\ProductsView.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\ui\StockEntryView.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\ui\StockOutView.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\ui\StockView.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\util\AppBus.java
+C:\Users\Tobias\Documents\farmacia\src\main\java\com\tobias\util\ExcelUtil.java
