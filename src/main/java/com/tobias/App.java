@@ -16,8 +16,24 @@ public class App extends Application {
   private boolean dark = false;
 
   @Override public void start(Stage stage) {
-    String programData = System.getenv("ProgramData");
-    Path dbDir = Path.of(programData, "Farmacia", "data");
+    // Detectar SO y usar ruta apropiada
+    String osName = System.getProperty("os.name").toLowerCase();
+    Path dbDir;
+    
+    if (osName.contains("win")) {
+      // Windows
+      String programData = System.getenv("ProgramData");
+      dbDir = Path.of(programData, "Farmacia", "data");
+    } else if (osName.contains("mac")) {
+      // macOS
+      String home = System.getProperty("user.home");
+      dbDir = Path.of(home, "Library", "Application Support", "Farmacia", "data");
+    } else {
+      // Linux y otros
+      String home = System.getProperty("user.home");
+      dbDir = Path.of(home, ".farmacia", "data");
+    }
+    
     new File(dbDir.toString()).mkdirs();
     String jdbcUrl = "jdbc:sqlite:" + dbDir.resolve("farmacia.db");
 

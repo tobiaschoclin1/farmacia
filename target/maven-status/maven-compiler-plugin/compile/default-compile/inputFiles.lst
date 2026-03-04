@@ -1,0 +1,14 @@
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/App.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/dao/ProductDao.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/db/Db.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/model/EntradaItem.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/model/Product.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/service/StockService.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/ui/ExpiryView.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/ui/ImportExportView.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/ui/ProductsView.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/ui/StockEntryView.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/ui/StockOutView.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/ui/StockView.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/util/AppBus.java
+/Users/tchoclin/Documents/Farmacia/farmacia/src/main/java/com/tobias/util/ExcelUtil.java
