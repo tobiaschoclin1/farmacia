@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock - Farmacia</title>
+    <link rel="stylesheet" href="/css/theme-professional.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="main-content" style="padding-bottom: 0;">
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                    💊 Sistema de Gestión - Farmacia
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 14px;">
+                    Gestión integral de inventario farmacéutico
+                </p>
+            </div>
+
+            <div class="tabs">
+                <a href="/" class="tab">🏠 Dashboard</a>
+                <a href="/productos" class="tab">📦 Productos</a>
+                <a href="/entradas" class="tab">📥 Entradas</a>
+                <a href="/salidas" class="tab">📤 Salidas</a>
+                <a href="/stock" class="tab active">📊 Stock</a>
+                <a href="/vencimientos" class="tab">⏰ Vencimientos</a>
+                <a href="/import-export" class="tab">💾 Import/Export</a>
+            </div>
+        </div>
+
+        <div class="main-content" style="padding-top: 0;">
+            <div class="page-header">
+                <h1 class="page-title">📊 Stock Actual</h1>
+                <p class="page-subtitle">Estado del inventario por producto y lote</p>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                    <input type="text" id="search" placeholder="Buscar por nombre o código de barras..." style="flex: 1;">
+                    <button onclick="loadStock()">Buscar</button>
+                </div>
+
+                <div id="loading">Cargando stock...</div>
+                <div id="stock-table" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Código</th>
+                                <th>Unidad</th>
+                                <th>Stock Actual</th>
+                                <th>Stock Mínimo</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stock-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal para ver lotes -->
+            <div id="lotesModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+                <div class="card" style="max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="font-size: 20px; font-weight: 600; margin: 0;">Lotes del Producto</h2>
+                        <button onclick="cerrarModal()" class="button ghost" style="padding: 8px;">✕</button>
+                    </div>
+                    <div id="lotes-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadStock() {
+            const search = document.getElementById('search').value;
+            const url = search ? `/api/stock?filtro=${encodeURIComponent(search)}` : '/api/stock';
+
+            try {
+                const response = await fetch(url);
+                const stock = await response.json();
+
+                const tbody = document.getElementById('stock-body');
+                tbody.innerHTML = stock.map(item => {
+                    const estadoBadge = {
+                        'EN_STOCK': '<span class="badge success">En Stock</span>',
+                        'STOCK_BAJO': '<span class="badge warning">Stock Bajo</span>',
+                        'SIN_STOCK': '<span class="badge danger">Sin Stock</span>'
+                    }[item.estado];
+
+                    const rowClass = {
+                        'EN_STOCK': 'in-stock',
+                        'STOCK_BAJO': 'medium-stock',
+                        'SIN_STOCK': 'low-stock'
+                    }[item.estado];
+
+                    return `
+                        <tr class="${rowClass}">
+                            <td><strong>${item.nombre}</strong></td>
+                            <td>${item.codigoBarra || '-'}</td>
+                            <td>${item.unidadBase}</td>
+                            <td><strong>${item.stockActual}</strong></td>
+                            <td>${item.stockMinimo}</td>
+                            <td>${estadoBadge}</td>
+                            <td>
+                                <button onclick="verLotes(${item.id}, '${item.nombre}')" class="button small">
+                                    Ver Lotes
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('stock-table').style.display = 'block';
+            } catch (error) {
+                console.error('Error cargando stock:', error);
+                document.getElementById('loading').textContent = 'Error al cargar stock';
+            }
+        }
+
+        async function verLotes(productoId, nombreProducto) {
+            try {
+                const response = await fetch(`/api/stock/lotes?productoId=${productoId}`);
+                const lotes = await response.json();
+
+                const content = document.getElementById('lotes-content');
+
+                if (lotes.length === 0) {
+                    content.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                            No hay lotes con stock para este producto
+                        </div>
+                    `;
+                } else {
+                    content.innerHTML = `
+                        <h3 style="margin-bottom: 16px; color: var(--text-primary);">${nombreProducto}</h3>
+                        <table style="margin-top: 0;">
+                            <thead>
+                                <tr>
+                                    <th>Fecha Lote</th>
+                                    <th>Fecha Vencimiento</th>
+                                    <th>Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${lotes.map(lote => `
+                                    <tr>
+                                        <td>${lote.fechaLote || '-'}</td>
+                                        <td>${lote.fechaVencimiento || 'Sin vencimiento'}</td>
+                                        <td><strong>${lote.cantidad}</strong></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                }
+
+                document.getElementById('lotesModal').style.display = 'flex';
+            } catch (error) {
+                console.error('Error cargando lotes:', error);
+                alert('Error al cargar lotes del producto');
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('lotesModal').style.display = 'none';
+        }
+
+        // Cargar al inicio
+        loadStock();
+
+        // Buscar al presionar Enter
+        document.getElementById('search').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadStock();
+        });
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') cerrarModal();
+        });
+    </script>
+</body>
+</html>

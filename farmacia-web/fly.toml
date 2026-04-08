@@ -1,0 +1,36 @@
+# fly.toml - Configuración para Fly.io
+# Documentación: https://fly.io/docs/reference/configuration/
+
+app = "farmacia-demo"
+primary_region = "gru" # São Paulo - más cercano a Argentina
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false  # IMPORTANTE: sin cold starts
+  auto_start_machines = true
+  min_machines_running = 1    # Siempre 1 máquina corriendo (gratis)
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/api/dashboard/kpis"
+
+[[vm]]
+  memory = '256mb'  # Mínimo para free tier
+  cpu_kind = 'shared'
+  cpus = 1
+
+# Volumen persistente para SQLite
+[[mounts]]
+  source = "farmacia_data"
+  destination = "/home/farmacia/.farmacia/data"
+  initial_size = "1GB"

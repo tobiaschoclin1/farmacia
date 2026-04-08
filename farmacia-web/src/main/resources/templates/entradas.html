@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entradas - Farmacia</title>
+    <link rel="stylesheet" href="/css/theme-professional.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="main-content" style="padding-bottom: 0;">
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                    💊 Sistema de Gestión - Farmacia
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 14px;">
+                    Gestión integral de inventario farmacéutico
+                </p>
+            </div>
+
+            <div class="tabs">
+                <a href="/" class="tab">🏠 Dashboard</a>
+                <a href="/productos" class="tab">📦 Productos</a>
+                <a href="/entradas" class="tab active">📥 Entradas</a>
+                <a href="/salidas" class="tab">📤 Salidas</a>
+                <a href="/stock" class="tab">📊 Stock</a>
+                <a href="/vencimientos" class="tab">⏰ Vencimientos</a>
+                <a href="/import-export" class="tab">💾 Import/Export</a>
+            </div>
+        </div>
+
+        <div class="main-content" style="padding-top: 0;">
+            <div class="page-header">
+                <h1 class="page-title">📥 Entrada de Stock</h1>
+                <p class="page-subtitle">Registrar ingreso de productos al inventario</p>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Nueva Entrada</h3>
+
+                <div style="margin-bottom: 20px;">
+                    <label class="form-label" style="display: block; margin-bottom: 8px;">Usuario</label>
+                    <input type="text" id="usuario" placeholder="Nombre del usuario" value="Sistema Web">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label class="form-label" style="display: block; margin-bottom: 8px;">Buscar Producto</label>
+                    <div style="display: flex; gap: 12px;">
+                        <input type="text" id="search-producto" placeholder="Buscar por nombre o código..." style="flex: 1;">
+                        <button onclick="buscarProducto()">Buscar</button>
+                    </div>
+                    <div id="search-results" style="margin-top: 12px;"></div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Productos a Ingresar</h4>
+                    <div id="items-container"></div>
+                    <div id="empty-state" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                        Busca y agrega productos para registrar la entrada
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button onclick="limpiarFormulario()" class="button secondary">Limpiar</button>
+                    <button onclick="registrarEntrada()" class="button success" id="btn-registrar">Registrar Entrada</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let itemsEntrada = [];
+
+        async function buscarProducto() {
+            const search = document.getElementById('search-producto').value;
+            if (!search) return;
+
+            try {
+                const response = await fetch(`/api/productos?filtro=${encodeURIComponent(search)}`);
+                const productos = await response.json();
+
+                const results = document.getElementById('search-results');
+                if (productos.length === 0) {
+                    results.innerHTML = '<p style="color: var(--text-secondary);">No se encontraron productos</p>';
+                    return;
+                }
+
+                results.innerHTML = `
+                    <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; padding: 8px;">
+                        ${productos.slice(0, 5).map(p => `
+                            <div onclick="agregarProducto(${p.id}, '${p.nombre}')"
+                                 style="padding: 12px; cursor: pointer; border-radius: 8px; margin-bottom: 4px;"
+                                 onmouseover="this.style.backgroundColor='var(--surface-hover)'"
+                                 onmouseout="this.style.backgroundColor='transparent'">
+                                <strong>${p.nombre}</strong>
+                                ${p.codigoBarra ? `<br><small style="color: var(--text-secondary);">Código: ${p.codigoBarra}</small>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error buscando productos:', error);
+            }
+        }
+
+        function agregarProducto(id, nombre) {
+            // Verificar si ya existe
+            if (itemsEntrada.find(i => i.productoId === id)) {
+                alert('Este producto ya está agregado');
+                return;
+            }
+
+            const hoy = new Date().toISOString().split('T')[0];
+
+            itemsEntrada.push({
+                productoId: id,
+                nombre: nombre,
+                fechaLote: hoy,
+                fechaVencimiento: '',
+                cantidad: 1
+            });
+
+            document.getElementById('search-results').innerHTML = '';
+            document.getElementById('search-producto').value = '';
+            renderItems();
+        }
+
+        function renderItems() {
+            const container = document.getElementById('items-container');
+            const emptyState = document.getElementById('empty-state');
+
+            if (itemsEntrada.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            container.innerHTML = itemsEntrada.map((item, index) => `
+                <div class="card" style="margin-bottom: 12px; padding: 16px; background: var(--surface-hover);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <strong style="font-size: 16px;">${item.nombre}</strong>
+                        <button onclick="eliminarItem(${index})" class="button danger small">Eliminar</button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label class="form-label" style="display: block; margin-bottom: 4px; font-size: 12px;">Fecha Lote</label>
+                            <input type="date" value="${item.fechaLote}"
+                                   onchange="itemsEntrada[${index}].fechaLote = this.value">
+                        </div>
+                        <div>
+                            <label class="form-label" style="display: block; margin-bottom: 4px; font-size: 12px;">Fecha Vencimiento (opcional)</label>
+                            <input type="date" value="${item.fechaVencimiento}"
+                                   onchange="itemsEntrada[${index}].fechaVencimiento = this.value">
+                        </div>
+                        <div>
+                            <label class="form-label" style="display: block; margin-bottom: 4px; font-size: 12px;">Cantidad</label>
+                            <input type="number" min="1" value="${item.cantidad}"
+                                   onchange="itemsEntrada[${index}].cantidad = parseInt(this.value)">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function eliminarItem(index) {
+            itemsEntrada.splice(index, 1);
+            renderItems();
+        }
+
+        function limpiarFormulario() {
+            itemsEntrada = [];
+            document.getElementById('search-producto').value = '';
+            document.getElementById('search-results').innerHTML = '';
+            renderItems();
+        }
+
+        async function registrarEntrada() {
+            if (itemsEntrada.length === 0) {
+                alert('Debes agregar al menos un producto');
+                return;
+            }
+
+            const usuario = document.getElementById('usuario').value || 'Sistema Web';
+            const btn = document.getElementById('btn-registrar');
+            btn.disabled = true;
+            btn.textContent = 'Registrando...';
+
+            try {
+                const response = await fetch('/api/entradas', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        usuario: usuario,
+                        items: itemsEntrada
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('✓ Entrada registrada exitosamente');
+                    limpiarFormulario();
+                } else {
+                    alert('Error: ' + (result.error || 'Error desconocido'));
+                }
+            } catch (error) {
+                console.error('Error registrando entrada:', error);
+                alert('Error al registrar entrada');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Registrar Entrada';
+            }
+        }
+
+        // Buscar al presionar Enter
+        document.getElementById('search-producto').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') buscarProducto();
+        });
+    </script>
+</body>
+</html>

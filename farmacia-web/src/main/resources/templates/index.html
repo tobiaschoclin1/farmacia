@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión - Farmacia</title>
+    <link rel="stylesheet" href="/css/theme-professional.css">
+    <style>
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .tab-content {
+            flex: 1;
+        }
+
+        #loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Tabs -->
+        <div class="main-content" style="padding-bottom: 0;">
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                    💊 Sistema de Gestión - Farmacia
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 14px;">
+                    Gestión integral de inventario farmacéutico
+                </p>
+            </div>
+
+            <div class="tabs">
+                <a href="/" class="tab active">🏠 Dashboard</a>
+                <a href="/productos" class="tab">📦 Productos</a>
+                <a href="/entradas" class="tab">📥 Entradas</a>
+                <a href="/salidas" class="tab">📤 Salidas</a>
+                <a href="/stock" class="tab">📊 Stock</a>
+                <a href="/vencimientos" class="tab">⏰ Vencimientos</a>
+                <a href="/import-export" class="tab">💾 Import/Export</a>
+            </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="main-content tab-content" style="padding-top: 0;">
+            <div id="loading">Cargando...</div>
+            <div id="dashboard-content" style="display: none;">
+                <!-- KPIs Grid -->
+                <div class="metrics-grid" id="kpis-grid"></div>
+
+                <!-- Alertas Grid -->
+                <div class="alerts-grid">
+                    <!-- Próximos a vencer -->
+                    <div class="card">
+                        <div class="card-title">
+                            <svg width="20" height="20" fill="none" stroke="#F79009" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="10" cy="10" r="8"></circle>
+                                <polyline points="10 6 10 10 13 13"></polyline>
+                            </svg>
+                            Productos Próximos a Vencer
+                        </div>
+                        <div id="proximos-vencer" style="margin-top: 16px;"></div>
+                    </div>
+
+                    <!-- Stock bajo -->
+                    <div class="card">
+                        <div class="card-title">
+                            <svg width="20" height="20" fill="none" stroke="#F04438" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            Productos con Stock Bajo
+                        </div>
+                        <div id="stock-bajo" style="margin-top: 16px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Iconos SVG
+        const icons = {
+            cube: (size, color) => `
+                <svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+            `,
+            checkCircle: (size, color) => `
+                <svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            `,
+            alertTriangle: (size, color) => `
+                <svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            `,
+            xCircle: (size, color) => `
+                <svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            `,
+            clock: (size, color) => `
+                <svg width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+            `
+        };
+
+        // Función para convertir hex a rgba
+        function hexToRgba(hex, opacity) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r},${g},${b},${opacity})`;
+        }
+
+        // Cargar KPIs
+        async function loadKPIs() {
+            try {
+                const response = await fetch('/api/dashboard/kpis');
+                const data = await response.json();
+
+                const kpis = [
+                    { title: 'Productos Totales', value: data.totalProductos, desc: 'Total de productos activos', color: '#5B7FFF', icon: icons.cube(24, '#5B7FFF') },
+                    { title: 'En Stock', value: data.enStock, desc: 'Con stock suficiente', color: '#12B76A', icon: icons.checkCircle(24, '#12B76A') },
+                    { title: 'Stock Bajo', value: data.stockBajo, desc: 'Por debajo del mínimo', color: '#F79009', icon: icons.alertTriangle(24, '#F79009') },
+                    { title: 'Sin Stock', value: data.sinStock, desc: 'Requieren reposición', color: '#F04438', icon: icons.xCircle(24, '#F04438') },
+                    { title: 'Próx. a Vencer', value: data.proxVencer, desc: 'Vencen en 30 días', color: '#F79009', icon: icons.clock(24, '#F79009') }
+                ];
+
+                const grid = document.getElementById('kpis-grid');
+                grid.innerHTML = kpis.map(kpi => `
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background-color: ${hexToRgba(kpi.color, 0.1)};">
+                            ${kpi.icon}
+                        </div>
+                        <div class="metric-label">${kpi.title}</div>
+                        <div class="metric-value" style="color: ${kpi.color};">${kpi.value}</div>
+                        <div class="metric-change">${kpi.desc}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error cargando KPIs:', error);
+            }
+        }
+
+        // Cargar próximos a vencer
+        async function loadProximosVencer() {
+            try {
+                const response = await fetch('/api/dashboard/proximos-vencer');
+                const data = await response.json();
+
+                const container = document.getElementById('proximos-vencer');
+
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            ${icons.checkCircle(16, '#12B76A')}
+                            No hay productos próximos a vencer
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = data.map(item => `
+                    <div class="alert-item warning">
+                        <div class="alert-icon">${icons.clock(18, '#F79009')}</div>
+                        <div class="alert-info">
+                            <div class="nombre">${item.nombre}</div>
+                            <div class="detalle">${item.fechaFormateada} • ${item.diasRestantes} días • ${item.cantidad} unidades</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error cargando próximos a vencer:', error);
+            }
+        }
+
+        // Cargar stock bajo
+        async function loadStockBajo() {
+            try {
+                const response = await fetch('/api/dashboard/stock-bajo');
+                const data = await response.json();
+
+                const container = document.getElementById('stock-bajo');
+
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            ${icons.checkCircle(16, '#12B76A')}
+                            Todos los productos tienen stock suficiente
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = data.map(item => `
+                    <div class="alert-item danger">
+                        <div class="alert-icon">${icons.alertTriangle(18, '#F04438')}</div>
+                        <div class="alert-info">
+                            <div class="nombre">${item.nombre}</div>
+                            <div class="detalle">Stock: ${item.cantidadActual} / ${item.stockMinimo} • ${item.porcentaje}% del mínimo</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error cargando stock bajo:', error);
+            }
+        }
+
+        // Cargar dashboard
+        async function loadDashboard() {
+            await Promise.all([
+                loadKPIs(),
+                loadProximosVencer(),
+                loadStockBajo()
+            ]);
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+        }
+
+        // Cargar al inicio
+        loadDashboard();
+
+        // Recargar cada 30 segundos
+        setInterval(loadDashboard, 30000);
+    </script>
+</body>
+</html>

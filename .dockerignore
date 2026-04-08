@@ -1,0 +1,57 @@
+# Build artifacts
+target/
+*/target/
+*.jar
+*.war
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Database files (no incluir en imagen)
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment files (usar variables de entorno de la plataforma)
+.env
+.env.local
+.env.*
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Deployment configs específicos de otros servicios
+fly.toml
+.fly/
+
+# Documentation
+README.md
+QUICKSTART.md
+*.md
+
+# Desktop module (no se usa en web)
+farmacia-desktop/
