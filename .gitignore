@@ -67,3 +67,6 @@ spring.log
 
 # Fly.io
 .fly/
+
+# Claude Code
+.claude/
