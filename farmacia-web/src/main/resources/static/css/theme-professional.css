@@ -1,55 +1,60 @@
 /* ============================================================================
    Farmacia — Sistema Profesional de Gestión de Stock
-   Diseño moderno y minimalista tipo SaaS Dashboard
-   Versión Web - Convertido desde JavaFX
+   Diseño farmacéutico profesional con paleta médica
    ========================================================================== */
 
 :root {
-  /* Paleta profesional - Tonos neutros con acentos vibrantes */
-  --bg-app: #F8F9FA;
+  /* Paleta Farmacéutica Profesional */
+  --bg-app: #F7F9FB;
   --bg-sidebar: #FFFFFF;
   --surface: #FFFFFF;
-  --surface-hover: #F8F9FA;
-  --border: #E9ECEF;
-  --border-light: #F1F3F5;
+  --surface-hover: #F7F9FB;
+  --border: #E4E9F0;
+  --border-light: #EDF1F7;
 
   /* Texto con escala de grises profesional */
-  --text-primary: #212529;
-  --text-secondary: #6C757D;
-  --text-tertiary: #ADB5BD;
+  --text-primary: #1A2332;
+  --text-secondary: #5B6B82;
+  --text-tertiary: #9BA7BA;
   --text-inverse: #FFFFFF;
-  --text-muted: #868E96;
+  --text-muted: #7D8DA6;
 
-  /* Color primario - Azul vibrante profesional */
-  --primary: #5B7FFF;
-  --primary-hover: #4B6FEF;
-  --primary-light: #EEF2FF;
-  --primary-soft: #F5F7FF;
-  --primary-dark: #3B5FDF;
+  /* Color primario - Azul médico profesional */
+  --primary: #1E88E5;
+  --primary-hover: #1976D2;
+  --primary-light: #E3F2FD;
+  --primary-soft: #F1F8FE;
+  --primary-dark: #1565C0;
+
+  /* Color secundario - Verde salud */
+  --secondary: #26A69A;
+  --secondary-hover: #00897B;
+  --secondary-light: #E0F2F1;
+  --secondary-dark: #00695C;
 
   /* Estados semánticos */
-  --success: #12B76A;
-  --success-light: #ECFDF3;
-  --success-dark: #027A48;
+  --success: #26A69A;
+  --success-light: #E0F2F1;
+  --success-dark: #00695C;
 
-  --warning: #F79009;
-  --warning-light: #FEF6EE;
-  --warning-dark: #B54708;
+  --warning: #FB8C00;
+  --warning-light: #FFF3E0;
+  --warning-dark: #E65100;
 
-  --danger: #F04438;
-  --danger-light: #FEF3F2;
-  --danger-dark: #B42318;
+  --danger: #E53935;
+  --danger-light: #FFEBEE;
+  --danger-dark: #C62828;
 
-  --info: #5B7FFF;
-  --info-light: #EEF2FF;
+  --info: #1E88E5;
+  --info-light: #E3F2FD;
 
   /* Sombras profesionales */
-  --shadow-xs: 0 1px 2px 0 rgba(16,24,40,0.05);
-  --shadow-sm: 0 2px 4px 0 rgba(16,24,40,0.06);
-  --shadow: 0 4px 8px 0 rgba(16,24,40,0.08);
-  --shadow-md: 0 6px 12px 0 rgba(16,24,40,0.10);
-  --shadow-lg: 0 10px 20px 0 rgba(16,24,40,0.15);
-  --shadow-xl: 0 14px 28px 0 rgba(16,24,40,0.20);
+  --shadow-xs: 0 1px 2px 0 rgba(26,35,50,0.05);
+  --shadow-sm: 0 2px 4px 0 rgba(26,35,50,0.06);
+  --shadow: 0 4px 8px 0 rgba(26,35,50,0.08);
+  --shadow-md: 0 6px 12px 0 rgba(26,35,50,0.10);
+  --shadow-lg: 0 10px 20px 0 rgba(26,35,50,0.15);
+  --shadow-xl: 0 14px 28px 0 rgba(26,35,50,0.20);
 
   /* Espaciado */
   --spacing-xs: 4px;

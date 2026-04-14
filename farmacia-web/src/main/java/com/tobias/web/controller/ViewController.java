@@ -40,9 +40,4 @@ public class ViewController {
     public String vencimientos() {
         return "vencimientos";
     }
-
-    @GetMapping("/import-export")
-    public String importExport() {
-        return "import-export";
-    }
 }
