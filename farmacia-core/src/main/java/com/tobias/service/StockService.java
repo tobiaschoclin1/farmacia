@@ -59,11 +59,20 @@ public class StockService {
   }
 
   private int ensureLote(Connection c, int productoId, LocalDate fechaLote, LocalDate fechaVenc) throws Exception {
-    String sel = "SELECT id FROM lotes WHERE producto_id=? AND COALESCE(fecha_lote,'')=COALESCE(?, '') AND COALESCE(fecha_vencimiento,'')=COALESCE(?, '')";
+    // Usar IS NOT DISTINCT FROM para comparar NULLs correctamente en PostgreSQL
+    String sel = "SELECT id FROM lotes WHERE producto_id=? AND fecha_lote IS NOT DISTINCT FROM ? AND fecha_vencimiento IS NOT DISTINCT FROM ?";
     try (PreparedStatement ps = c.prepareStatement(sel)) {
       ps.setInt(1, productoId);
-      ps.setString(2, fechaLote==null? null : fechaLote.toString());
-      ps.setString(3, fechaVenc==null? null : fechaVenc.toString());
+      if (fechaLote == null) {
+        ps.setNull(2, Types.DATE);
+      } else {
+        ps.setDate(2, java.sql.Date.valueOf(fechaLote));
+      }
+      if (fechaVenc == null) {
+        ps.setNull(3, Types.DATE);
+      } else {
+        ps.setDate(3, java.sql.Date.valueOf(fechaVenc));
+      }
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) return rs.getInt(1);
       }
@@ -71,8 +80,16 @@ public class StockService {
     String ins = "INSERT INTO lotes(producto_id,fecha_lote,fecha_vencimiento) VALUES(?,?,?)";
     try (PreparedStatement ps = c.prepareStatement(ins, Statement.RETURN_GENERATED_KEYS)) {
       ps.setInt(1, productoId);
-      if (fechaLote==null) ps.setNull(2, Types.VARCHAR); else ps.setString(2, fechaLote.toString());
-      if (fechaVenc==null) ps.setNull(3, Types.VARCHAR); else ps.setString(3, fechaVenc.toString());
+      if (fechaLote == null) {
+        ps.setNull(2, Types.DATE);
+      } else {
+        ps.setDate(2, java.sql.Date.valueOf(fechaLote));
+      }
+      if (fechaVenc == null) {
+        ps.setNull(3, Types.DATE);
+      } else {
+        ps.setDate(3, java.sql.Date.valueOf(fechaVenc));
+      }
       ps.executeUpdate();
       try (ResultSet rs = ps.getGeneratedKeys()) { rs.next(); return rs.getInt(1); }
     }
