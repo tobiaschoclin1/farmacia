@@ -1,10 +1,11 @@
 package com.tobias.web.controller;
 
-import com.tobias.db.Db;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -15,11 +16,14 @@ import java.util.*;
 @RequestMapping("/api/dashboard")
 public class DashboardController {
 
+    @Autowired
+    private DataSource dataSource;
+
     @GetMapping("/kpis")
     public Map<String, Object> getKPIs() throws Exception {
         Map<String, Object> kpis = new LinkedHashMap<>();
 
-        try (Connection c = Db.get()) {
+        try (Connection c = dataSource.getConnection()) {
             // Total productos activos
             String sqlTotal = "SELECT COUNT(*) FROM productos WHERE activo = 1";
             try (PreparedStatement ps = c.prepareStatement(sqlTotal);
@@ -93,7 +97,7 @@ public class DashboardController {
             LIMIT 10
             """;
 
-        try (Connection c = Db.get();
+        try (Connection c = dataSource.getConnection();
              PreparedStatement ps = c.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -141,7 +145,7 @@ public class DashboardController {
             LIMIT 10
             """;
 
-        try (Connection c = Db.get();
+        try (Connection c = dataSource.getConnection();
              PreparedStatement ps = c.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 

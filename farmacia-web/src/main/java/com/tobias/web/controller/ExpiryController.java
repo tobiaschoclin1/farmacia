@@ -1,11 +1,12 @@
 package com.tobias.web.controller;
 
-import com.tobias.db.Db;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -15,6 +16,9 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/vencimientos")
 public class ExpiryController {
+
+    @Autowired
+    private DataSource dataSource;
 
     @GetMapping
     public List<Map<String, Object>> getVencimientos(@RequestParam(defaultValue = "90") int dias) throws Exception {
@@ -39,7 +43,7 @@ public class ExpiryController {
             ORDER BY l.fecha_vencimiento, p.nombre
             """;
 
-        try (Connection c = Db.get();
+        try (Connection c = dataSource.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
 
             ps.setInt(1, dias);
@@ -92,7 +96,7 @@ public class ExpiryController {
     public Map<String, Integer> getStats() throws Exception {
         Map<String, Integer> stats = new LinkedHashMap<>();
 
-        try (Connection c = Db.get()) {
+        try (Connection c = dataSource.getConnection()) {
             // Vencidos
             String sqlVencidos = """
                 SELECT COUNT(DISTINCT l.id)

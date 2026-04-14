@@ -1,17 +1,21 @@
 package com.tobias.web.controller;
 
-import com.tobias.db.Db;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 
 @RestController
 @RequestMapping("/api/stock")
 public class StockController {
+
+    @Autowired
+    private DataSource dataSource;
 
     @GetMapping
     public List<Map<String, Object>> getStock(@RequestParam(required = false) String filtro) throws Exception {
@@ -39,7 +43,7 @@ public class StockController {
             ORDER BY p.nombre
             """;
 
-        try (Connection c = Db.get();
+        try (Connection c = dataSource.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
 
             String f = (filtro == null || filtro.isBlank()) ? null : "%" + filtro.trim() + "%";
@@ -82,7 +86,7 @@ public class StockController {
             ORDER BY l.fecha_vencimiento IS NULL, l.fecha_vencimiento, l.fecha_lote
             """;
 
-        try (Connection c = Db.get();
+        try (Connection c = dataSource.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
 
             ps.setInt(1, productoId);
