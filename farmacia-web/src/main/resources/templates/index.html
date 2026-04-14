@@ -138,10 +138,10 @@
 
                 const kpis = [
                     { title: 'Productos Totales', value: data.totalProductos, desc: 'Total de productos activos', color: '#1E88E5', icon: icons.cube(24, '#1E88E5'), link: '/productos' },
-                    { title: 'En Stock', value: data.enStock, desc: 'Con stock suficiente', color: '#26A69A', icon: icons.checkCircle(24, '#26A69A'), link: '/stock' },
-                    { title: 'Stock Bajo', value: data.stockBajo, desc: 'Por debajo del mínimo', color: '#FB8C00', icon: icons.alertTriangle(24, '#FB8C00'), link: '/stock' },
-                    { title: 'Sin Stock', value: data.sinStock, desc: 'Requieren reposición', color: '#E53935', icon: icons.xCircle(24, '#E53935'), link: '/stock' },
-                    { title: 'Próx. a Vencer', value: data.proxVencer, desc: 'Vencen en 30 días', color: '#FB8C00', icon: icons.clock(24, '#FB8C00'), link: '/vencimientos' }
+                    { title: 'En Stock', value: data.enStock, desc: 'Con stock suficiente', color: '#26A69A', icon: icons.checkCircle(24, '#26A69A'), link: '/stock?estado=EN_STOCK' },
+                    { title: 'Stock Bajo', value: data.stockBajo, desc: 'Por debajo del mínimo', color: '#FB8C00', icon: icons.alertTriangle(24, '#FB8C00'), link: '/stock?estado=STOCK_BAJO' },
+                    { title: 'Sin Stock', value: data.sinStock, desc: 'Requieren reposición', color: '#E53935', icon: icons.xCircle(24, '#E53935'), link: '/stock?estado=SIN_STOCK' },
+                    { title: 'Próx. a Vencer', value: data.proxVencer, desc: 'Vencen en 30 días', color: '#FB8C00', icon: icons.clock(24, '#FB8C00'), link: '/vencimientos?dias=30&estado=VENCE_PRONTO' }
                 ];
 
                 const grid = document.getElementById('kpis-grid');

@@ -11,10 +11,10 @@
         <div class="main-content" style="padding-bottom: 0;">
             <div style="margin-bottom: 24px;">
                 <h1 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
-                    💊 Sistema de Gestión - Farmacia
+                    Sistema de Gestión Farmacéutica
                 </h1>
                 <p style="color: var(--text-secondary); font-size: 14px;">
-                    Gestión integral de inventario farmacéutico
+                    Control integral de inventario y vencimientos
                 </p>
             </div>
 
@@ -25,12 +25,12 @@
                 <a href="/salidas" class="tab">Salidas</a>
                 <a href="/stock" class="tab">Stock</a>
                 <a href="/vencimientos" class="tab active">Vencimientos</a>
-            </div>
+                            </div>
         </div>
 
         <div class="main-content" style="padding-top: 0;">
             <div class="page-header">
-                <h1 class="page-title">⏰ Control de Vencimientos</h1>
+                <h1 class="page-title">Control de Vencimientos</h1>
                 <p class="page-subtitle">Monitoreo de fechas de expiración de productos</p>
             </div>
 
@@ -75,8 +75,8 @@
             </div>
 
             <div class="card">
-                <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: end;">
-                    <div style="flex: 1;">
+                <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: end; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 150px;">
                         <label class="form-label" style="display: block; margin-bottom: 8px;">Mostrar vencimientos de los próximos</label>
                         <select id="filter-dias" onchange="loadVencimientos()">
                             <option value="7">7 días</option>
@@ -86,6 +86,24 @@
                             <option value="90">90 días</option>
                             <option value="180">6 meses</option>
                             <option value="365">1 año</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label class="form-label" style="display: block; margin-bottom: 8px;">Filtrar por estado</label>
+                        <select id="filtroEstado" onchange="applyFilters()">
+                            <option value="">Todos</option>
+                            <option value="VENCIDO">Vencidos</option>
+                            <option value="VENCE_MUY_PRONTO">Vencen en 7 días</option>
+                            <option value="VENCE_PRONTO">Vencen en 30 días</option>
+                            <option value="VENCE_FUTURO">Futuros</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label class="form-label" style="display: block; margin-bottom: 8px;">Ordenar por</label>
+                        <select id="ordenamiento" onchange="applyFilters()">
+                            <option value="fecha">Fecha de vencimiento</option>
+                            <option value="nombre">Nombre de producto</option>
+                            <option value="cantidad">Cantidad</option>
                         </select>
                     </div>
                     <button onclick="loadVencimientos()" class="button">Actualizar</button>
@@ -113,6 +131,8 @@
     </div>
 
     <script>
+        let vencimientosData = [];
+
         async function loadStats() {
             try {
                 const response = await fetch('/api/vencimientos/stats');
@@ -132,63 +152,105 @@
 
             try {
                 const response = await fetch(url);
-                const vencimientos = await response.json();
-
-                const tbody = document.getElementById('vencimientos-body');
-
-                if (vencimientos.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                                ✓ No hay productos próximos a vencer en este período
-                            </td>
-                        </tr>
-                    `;
-                } else {
-                    tbody.innerHTML = vencimientos.map(item => {
-                        const estadoBadge = {
-                            'VENCIDO': '<span class="badge danger">Vencido</span>',
-                            'VENCE_MUY_PRONTO': '<span class="badge danger">⚠️ Urgente</span>',
-                            'VENCE_PRONTO': '<span class="badge warning">Próximo</span>',
-                            'VENCE_FUTURO': '<span class="badge info">Futuro</span>'
-                        }[item.estado];
-
-                        const rowClass = {
-                            'VENCIDO': 'expired',
-                            'VENCE_MUY_PRONTO': 'expiring-very-soon',
-                            'VENCE_PRONTO': 'expiring-soon',
-                            'VENCE_FUTURO': ''
-                        }[item.estado];
-
-                        const diasText = item.diasRestantes < 0
-                            ? `<strong style="color: var(--danger);">Vencido hace ${Math.abs(item.diasRestantes)} días</strong>`
-                            : `<strong>${item.diasRestantes} días</strong>`;
-
-                        return `
-                            <tr class="${rowClass}">
-                                <td><strong>${item.nombre}</strong></td>
-                                <td>${item.codigoBarra || '-'}</td>
-                                <td>${item.fechaLote || '-'}</td>
-                                <td><strong>${item.fechaFormateada}</strong></td>
-                                <td>${diasText}</td>
-                                <td><strong>${item.cantidad}</strong></td>
-                                <td>${estadoBadge}</td>
-                            </tr>
-                        `;
-                    }).join('');
-                }
-
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('vencimientos-table').style.display = 'block';
+                vencimientosData = await response.json();
+                applyFilters();
+                loadStats();
             } catch (error) {
                 console.error('Error cargando vencimientos:', error);
                 document.getElementById('loading').textContent = 'Error al cargar vencimientos';
             }
         }
 
-        // Cargar al inicio
-        loadStats();
-        loadVencimientos();
+        function applyFilters() {
+            const filtroEstado = document.getElementById('filtroEstado').value;
+            const ordenamiento = document.getElementById('ordenamiento').value;
+
+            // Filtrar
+            let filtered = [...vencimientosData];
+            if (filtroEstado) {
+                filtered = filtered.filter(item => item.estado === filtroEstado);
+            }
+
+            // Ordenar
+            if (ordenamiento === 'fecha') {
+                filtered.sort((a, b) => a.diasRestantes - b.diasRestantes);
+            } else if (ordenamiento === 'nombre') {
+                filtered.sort((a, b) => a.nombre.localeCompare(b.nombre));
+            } else if (ordenamiento === 'cantidad') {
+                filtered.sort((a, b) => b.cantidad - a.cantidad);
+            }
+
+            renderVencimientos(filtered);
+        }
+
+        function renderVencimientos(vencimientos) {
+            const tbody = document.getElementById('vencimientos-body');
+
+            if (vencimientos.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                            No hay productos próximos a vencer con los filtros seleccionados
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = vencimientos.map(item => {
+                    const estadoBadge = {
+                        'VENCIDO': '<span class="badge danger">Vencido</span>',
+                        'VENCE_MUY_PRONTO': '<span class="badge danger">Urgente</span>',
+                        'VENCE_PRONTO': '<span class="badge warning">Próximo</span>',
+                        'VENCE_FUTURO': '<span class="badge info">Futuro</span>'
+                    }[item.estado];
+
+                    const rowClass = {
+                        'VENCIDO': 'expired',
+                        'VENCE_MUY_PRONTO': 'expiring-very-soon',
+                        'VENCE_PRONTO': 'expiring-soon',
+                        'VENCE_FUTURO': ''
+                    }[item.estado];
+
+                    const diasText = item.diasRestantes < 0
+                        ? `<strong style="color: var(--danger);">Vencido hace ${Math.abs(item.diasRestantes)} días</strong>`
+                        : `<strong>${item.diasRestantes} días</strong>`;
+
+                    return `
+                        <tr class="${rowClass}">
+                            <td><strong>${item.nombre}</strong></td>
+                            <td>${item.codigoBarra || '-'}</td>
+                            <td>${item.fechaLote || '-'}</td>
+                            <td><strong>${item.fechaFormateada}</strong></td>
+                            <td>${diasText}</td>
+                            <td><strong>${item.cantidad}</strong></td>
+                            <td>${estadoBadge}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('vencimientos-table').style.display = 'block';
+        }
+
+        // Cargar al inicio con filtros de URL
+        function initVencimientos() {
+            const params = new URLSearchParams(window.location.search);
+            const estado = params.get('estado');
+            const dias = params.get('dias');
+
+            if (estado) {
+                document.getElementById('filtroEstado').value = estado;
+            }
+
+            if (dias) {
+                document.getElementById('filter-dias').value = dias;
+            }
+
+            loadStats();
+            loadVencimientos();
+        }
+
+        initVencimientos();
 
         // Recargar cada 5 minutos
         setInterval(() => {
