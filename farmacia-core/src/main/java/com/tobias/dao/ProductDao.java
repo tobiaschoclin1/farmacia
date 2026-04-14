@@ -18,7 +18,7 @@ public class ProductDao {
     """;
     try (Connection c = Db.get(); PreparedStatement ps = c.prepareStatement(sql)) {
       String f = (filtro == null || filtro.isBlank()) ? null : "%" + filtro.trim() + "%";
-      ps.setObject(1, f); ps.setObject(2, f); ps.setObject(3, f);
+      ps.setString(1, f); ps.setString(2, f); ps.setString(3, f);
       try (ResultSet rs = ps.executeQuery()) {
         List<Product> out = new ArrayList<>();
         while (rs.next()) {

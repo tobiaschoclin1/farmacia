@@ -47,9 +47,9 @@ public class StockController {
              PreparedStatement ps = c.prepareStatement(sql)) {
 
             String f = (filtro == null || filtro.isBlank()) ? null : "%" + filtro.trim() + "%";
-            ps.setObject(1, f);
-            ps.setObject(2, f);
-            ps.setObject(3, f);
+            ps.setString(1, f);
+            ps.setString(2, f);
+            ps.setString(3, f);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
