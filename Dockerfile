@@ -26,6 +26,11 @@ FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
+# Instalar curl para healthcheck
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
+
 # Crear usuario no-root para seguridad
 RUN groupadd -r farmacia && useradd -r -g farmacia farmacia && \
     chown -R farmacia:farmacia /app
@@ -47,5 +52,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
 ENV PORT=8080
 
-# Ejecutar aplicación
-ENTRYPOINT exec java $JAVA_OPTS -jar app.jar
+# Ejecutar aplicación - usar forma de array para evitar problemas de parsing
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
