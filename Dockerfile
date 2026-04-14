@@ -4,9 +4,9 @@ FROM eclipse-temurin:21-jdk-jammy AS build
 WORKDIR /build
 
 # Copiar POMs primero para aprovechar cache de Docker
-COPY pom.xml .
+# Usar pom-docker.xml (solo declara core y web, no desktop)
+COPY pom-docker.xml pom.xml
 COPY farmacia-core/pom.xml farmacia-core/
-COPY farmacia-desktop/pom.xml farmacia-desktop/
 COPY farmacia-web/pom.xml farmacia-web/
 
 # Descargar dependencias (se cachea si los POMs no cambian)
