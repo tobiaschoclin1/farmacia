@@ -31,6 +31,12 @@ public class DataSourceConfig {
         // Limpiar parámetros incompatibles de Neon
         normalizedUrl = cleanNeonParameters(normalizedUrl);
 
+        // Extraer credenciales si están en la URL
+        String[] extracted = extractCredentialsFromUrl(normalizedUrl);
+        String cleanUrl = extracted[0];
+        String finalUsername = extracted[1] != null ? extracted[1] : username;
+        String finalPassword = extracted[2] != null ? extracted[2] : password;
+
         // Cargar explícitamente el driver PostgreSQL
         try {
             Class.forName(driverClassName);
@@ -39,9 +45,9 @@ public class DataSourceConfig {
         }
 
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(normalizedUrl);
-        config.setUsername(username);
-        config.setPassword(password);
+        config.setJdbcUrl(cleanUrl);
+        config.setUsername(finalUsername);
+        config.setPassword(finalPassword);
         config.setDriverClassName(driverClassName);
 
         // Configuración optimizada para free tier (pocas conexiones)
@@ -51,7 +57,8 @@ public class DataSourceConfig {
         config.setIdleTimeout(600000);
         config.setMaxLifetime(1800000);
 
-        System.out.println("DataSource configured with URL: " + maskPassword(normalizedUrl));
+        System.out.println("DataSource configured with URL: " + maskPassword(cleanUrl));
+        System.out.println("Using username: " + finalUsername);
         return new HikariDataSource(config);
     }
 
@@ -104,6 +111,52 @@ public class DataSourceConfig {
         url = url.replaceAll("\\?&", "?");
 
         return url;
+    }
+
+    /**
+     * Extrae credenciales embebidas en la URL y devuelve una URL limpia.
+     * Neon y otros proveedores incluyen usuario:password@ en la URL.
+     *
+     * @return Array [URL limpia, username o null, password o null]
+     */
+    private String[] extractCredentialsFromUrl(String url) {
+        if (url == null || !url.contains("@")) {
+            // No hay credenciales en la URL
+            return new String[]{url, null, null};
+        }
+
+        try {
+            // Patrón: jdbc:postgresql://username:password@host:port/database?params
+            // Necesitamos extraer username y password, y crear una URL limpia
+
+            String protocol = url.substring(0, url.indexOf("://") + 3);  // "jdbc:postgresql://"
+            String rest = url.substring(url.indexOf("://") + 3);  // "user:pass@host:port/db?params"
+
+            if (!rest.contains("@")) {
+                return new String[]{url, null, null};
+            }
+
+            String credentials = rest.substring(0, rest.indexOf("@"));  // "user:pass"
+            String hostAndRest = rest.substring(rest.indexOf("@") + 1);  // "host:port/db?params"
+
+            String extractedUsername = null;
+            String extractedPassword = null;
+
+            if (credentials.contains(":")) {
+                extractedUsername = credentials.substring(0, credentials.indexOf(":"));
+                extractedPassword = credentials.substring(credentials.indexOf(":") + 1);
+            } else {
+                extractedUsername = credentials;
+            }
+
+            String cleanUrl = protocol + hostAndRest;
+
+            return new String[]{cleanUrl, extractedUsername, extractedPassword};
+
+        } catch (Exception e) {
+            System.err.println("Error extracting credentials from URL: " + e.getMessage());
+            return new String[]{url, null, null};
+        }
     }
 
     /**
