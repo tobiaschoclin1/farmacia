@@ -25,7 +25,7 @@ public class DashboardController {
 
         try (Connection c = dataSource.getConnection()) {
             // Total productos activos
-            String sqlTotal = "SELECT COUNT(*) FROM productos WHERE activo = 1";
+            String sqlTotal = "SELECT COUNT(*) FROM productos WHERE activo = true";
             try (PreparedStatement ps = c.prepareStatement(sqlTotal);
                  ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -46,7 +46,7 @@ public class DashboardController {
                   LEFT JOIN stock_lote sl ON sl.lote_id = l.id
                   GROUP BY l.producto_id
                 ) stock ON stock.producto_id = p.id
-                WHERE p.activo = 1
+                WHERE p.activo = true
                 """;
 
             try (PreparedStatement ps = c.prepareStatement(sqlStock);
@@ -63,7 +63,7 @@ public class DashboardController {
                 SELECT COUNT(DISTINCT l.producto_id)
                 FROM lotes l
                 INNER JOIN productos p ON p.id = l.producto_id
-                WHERE p.activo = 1
+                WHERE p.activo = true
                   AND l.fecha_vencimiento IS NOT NULL
                   AND l.fecha_vencimiento <= CURRENT_DATE + INTERVAL '30 days'
                   AND l.fecha_vencimiento >= CURRENT_DATE
@@ -89,7 +89,7 @@ public class DashboardController {
             FROM lotes l
             INNER JOIN productos p ON p.id = l.producto_id
             LEFT JOIN stock_lote sl ON sl.lote_id = l.id
-            WHERE p.activo = 1
+            WHERE p.activo = true
               AND l.fecha_vencimiento IS NOT NULL
               AND l.fecha_vencimiento <= CURRENT_DATE + INTERVAL '30 days'
               AND l.fecha_vencimiento >= CURRENT_DATE
@@ -138,7 +138,7 @@ public class DashboardController {
             FROM productos p
             LEFT JOIN lotes l ON l.producto_id = p.id
             LEFT JOIN stock_lote sl ON sl.lote_id = l.id
-            WHERE p.activo = 1
+            WHERE p.activo = true
             GROUP BY p.id, p.nombre, p.stock_minimo
             HAVING cantidad_actual > 0 AND cantidad_actual < p.stock_minimo
             ORDER BY (cantidad_actual * 1.0 / p.stock_minimo)
