@@ -31,12 +31,17 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/*
 
+# Copiar JAR y script de entrada
+COPY --from=build /build/app.jar app.jar
+COPY docker-entrypoint.sh /usr/local/bin/
+
+# Hacer ejecutable el script
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Crear usuario no-root para seguridad
 RUN groupadd -r farmacia && useradd -r -g farmacia farmacia && \
-    chown -R farmacia:farmacia /app
-
-# Copiar JAR desde build stage
-COPY --from=build --chown=farmacia:farmacia /build/app.jar app.jar
+    chown -R farmacia:farmacia /app && \
+    chown farmacia:farmacia /usr/local/bin/docker-entrypoint.sh
 
 # Cambiar a usuario no-root
 USER farmacia
@@ -48,9 +53,8 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8080/api/dashboard/kpis || exit 1
 
-# Variables de entorno por defecto (la plataforma puede sobrescribirlas)
-ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
+# Variables de entorno (Spring Boot las lee)
 ENV PORT=8080
 
-# Ejecutar aplicación - usar forma de array para evitar problemas de parsing
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+# Script de entrada que maneja JAVA_OPTS correctamente
+ENTRYPOINT ["docker-entrypoint.sh"]
