@@ -33,11 +33,21 @@ public class Db {
     String dbPassword = System.getenv("DATABASE_PASSWORD");
 
     if (dbUrl != null && !dbUrl.isEmpty()) {
-      // Modo PostgreSQL (producción)
-      URL = dbUrl;
-      USER = dbUser;
-      PASSWORD = dbPassword;
+      // Normalizar la URL para que siempre tenga el prefijo jdbc:
+      dbUrl = normalizeJdbcUrl(dbUrl);
+
+      // Limpiar parámetros incompatibles de Neon
+      dbUrl = cleanNeonParameters(dbUrl);
+
+      // Extraer credenciales si están embebidas en la URL
+      String[] extracted = extractCredentialsFromUrl(dbUrl);
+      URL = extracted[0];
+      USER = extracted[1] != null ? extracted[1] : dbUser;
+      PASSWORD = extracted[2] != null ? extracted[2] : dbPassword;
+
       System.out.println("Db: Using PostgreSQL from environment variables");
+      System.out.println("Db: URL normalized to: " + maskPassword(URL));
+      System.out.println("Db: Using username: " + USER);
       return;
     }
 
@@ -77,5 +87,90 @@ public class Db {
     USER = null;
     PASSWORD = null;
     System.out.println("Db: Using SQLite at " + URL);
+  }
+
+  private static String normalizeJdbcUrl(String url) {
+    if (url == null || url.isEmpty()) {
+      throw new IllegalArgumentException("Database URL cannot be null or empty");
+    }
+
+    // Si ya tiene el prefijo jdbc:, devolverla tal cual
+    if (url.startsWith("jdbc:")) {
+      return url;
+    }
+
+    // Si empieza con postgresql://, agregar jdbc: al inicio
+    if (url.startsWith("postgresql://")) {
+      return "jdbc:" + url;
+    }
+
+    // Si empieza con postgres://, convertir a jdbc:postgresql://
+    if (url.startsWith("postgres://")) {
+      return "jdbc:postgresql://" + url.substring("postgres://".length());
+    }
+
+    // Si no reconocemos el formato, lanzar excepción
+    throw new IllegalArgumentException("Unsupported database URL format: " + url);
+  }
+
+  private static String cleanNeonParameters(String url) {
+    if (url == null) return null;
+
+    // Eliminar channel_binding=require (incompatible con algunos drivers PostgreSQL)
+    url = url.replaceAll("[&?]channel_binding=require", "");
+
+    // Si quedó con ? al final, eliminarlo
+    url = url.replaceAll("\\?$", "");
+
+    // Si quedó con & duplicado, limpiarlo
+    url = url.replaceAll("&&", "&");
+
+    // Si el primer parámetro quedó con &, cambiarlo a ?
+    url = url.replaceAll("\\?&", "?");
+
+    return url;
+  }
+
+  private static String[] extractCredentialsFromUrl(String url) {
+    if (url == null || !url.contains("@")) {
+      // No hay credenciales en la URL
+      return new String[]{url, null, null};
+    }
+
+    try {
+      // Patrón: jdbc:postgresql://username:password@host:port/database?params
+      String protocol = url.substring(0, url.indexOf("://") + 3);  // "jdbc:postgresql://"
+      String rest = url.substring(url.indexOf("://") + 3);  // "user:pass@host:port/db?params"
+
+      if (!rest.contains("@")) {
+        return new String[]{url, null, null};
+      }
+
+      String credentials = rest.substring(0, rest.indexOf("@"));  // "user:pass"
+      String hostAndRest = rest.substring(rest.indexOf("@") + 1);  // "host:port/db?params"
+
+      String extractedUsername = null;
+      String extractedPassword = null;
+
+      if (credentials.contains(":")) {
+        extractedUsername = credentials.substring(0, credentials.indexOf(":"));
+        extractedPassword = credentials.substring(credentials.indexOf(":") + 1);
+      } else {
+        extractedUsername = credentials;
+      }
+
+      String cleanUrl = protocol + hostAndRest;
+
+      return new String[]{cleanUrl, extractedUsername, extractedPassword};
+
+    } catch (Exception e) {
+      System.err.println("Error extracting credentials from URL: " + e.getMessage());
+      return new String[]{url, null, null};
+    }
+  }
+
+  private static String maskPassword(String url) {
+    if (url == null) return null;
+    return url.replaceAll("://([^:]+):([^@]+)@", "://$1:****@");
   }
 }
