@@ -98,7 +98,7 @@ public class StockService {
   private void addStock(Connection c, int loteId, int cantidadBase) throws Exception {
     String up = """
       INSERT INTO stock_lote(lote_id, cantidad_base) VALUES(?,?)
-      ON CONFLICT(lote_id) DO UPDATE SET cantidad_base = cantidad_base + excluded.cantidad_base
+      ON CONFLICT(lote_id) DO UPDATE SET cantidad_base = stock_lote.cantidad_base + excluded.cantidad_base
       """;
     try (PreparedStatement ps = c.prepareStatement(up)) {
       ps.setInt(1, loteId);
