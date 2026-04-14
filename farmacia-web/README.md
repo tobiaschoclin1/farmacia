@@ -2,57 +2,44 @@
 
 Versión web del sistema de gestión de farmacia, construida con Spring Boot.
 
-## 🚀 Deployment en Fly.io (Gratuito)
+## 🚀 Deployment recomendado: Render + Cron Job
 
 ### Requisitos previos
-1. Instalar Fly CLI: https://fly.io/docs/hands-on/install-flyctl/
-2. Crear cuenta en Fly.io (gratis)
 
-### Pasos para deployment
+1. Cuenta en Render: https://render.com/
+2. PostgreSQL gratuito (recomendado Neon): https://neon.tech/
+3. Repositorio en GitHub
 
-```bash
-# 1. Navegar al directorio
-cd farmacia-web
+### Pasos rápidos
 
-# 2. Login en Fly.io
-fly auth login
+1. Crear DB PostgreSQL en Neon
+2. En Render: **New** → **Web Service**
+3. Conectar este repositorio
+4. Configurar Docker:
+	- Environment: `Docker`
+	- Dockerfile Path: `./Dockerfile`
+5. Variables de entorno:
+	- `DATABASE_URL`
+	- `DATABASE_USER`
+	- `DATABASE_PASSWORD`
+	- `JAVA_OPTS=-Xmx512m -Xms256m`
+6. Deploy
 
-# 3. Lanzar la aplicación (primera vez)
-fly launch --copy-config --name farmacia-demo
+### Evitar sleep (mitigación)
 
-# 4. Crear volumen persistente para la base de datos
-fly volumes create farmacia_data --region gru --size 1
+Este proyecto incluye workflow:
 
-# 5. Deploy
-fly deploy
+- `.github/workflows/keep-render-awake.yml`
 
-# 6. Ver logs
-fly logs
+Configura en GitHub el secret:
 
-# 7. Abrir en el navegador
-fly open
-```
+- `RENDER_HEALTHCHECK_URL=https://tu-app.onrender.com/api/dashboard/kpis`
 
-### Actualizar la aplicación
+Con eso, se envía un ping cada 10 minutos para reducir cold starts.
 
-```bash
-cd farmacia-web
-fly deploy
-```
+### Guía completa
 
-### Características del deployment
-
-- ✅ **Sin cold starts**: la aplicación está siempre disponible
-- ✅ **Persistencia**: SQLite con volumen persistente
-- ✅ **HTTPS automático**: certificado SSL gratuito
-- ✅ **Health checks**: monitoreo automático
-- ✅ **256MB RAM**: suficiente para Spring Boot
-- ✅ **Gratuito**: dentro del free tier de Fly.io
-
-### URLs
-
-- **Demo**: https://farmacia-demo.fly.dev
-- **API**: https://farmacia-demo.fly.dev/api/dashboard/kpis
+Ver [RENDER_DEPLOY.md](../RENDER_DEPLOY.md).
 
 ## 🛠️ Desarrollo local
 

@@ -22,31 +22,29 @@ farmacia-parent/
 
 ## Opciones de Despliegue
 
-### 1. Despliegue en Koyeb (Recomendado para Demo 24/7)
+### 1. Despliegue en Render + Cron Job (Recomendado para $0)
 
 **Ventajas:**
-- ✅ Free tier generoso
-- ✅ No sufre cold starts como Render
-- ✅ Despliegue desde GitHub o Docker
-- ✅ Health checks integrados
-- ✅ Base de datos PostgreSQL managed opcional
+- ✅ Plan gratuito disponible
+- ✅ Despliegue simple desde GitHub
+- ✅ Logs y health checks integrados
+- ✅ Compatible con PostgreSQL externo (Neon/Supabase)
+- ✅ Mitigación de reposo con cron job
 
 **Pasos:**
-Ver guía completa en [KOYEB_DEPLOY.md](./KOYEB_DEPLOY.md)
+Ver guía completa en [RENDER_DEPLOY.md](./RENDER_DEPLOY.md)
 
 **Resumen rápido:**
 ```bash
-# 1. Build imagen Docker
-docker build -t tu-usuario/farmacia-web:latest .
-docker push tu-usuario/farmacia-web:latest
+# 1. Crear DB PostgreSQL gratuita (Neon)
+# 2. Crear Web Service en Render (Environment: Docker, Dockerfile: ./Dockerfile)
+# 3. Configurar env vars:
+DATABASE_URL=jdbc:postgresql://host:5432/farmacia?sslmode=require
+DATABASE_USER=postgres
+DATABASE_PASSWORD=tu_password
 
-# 2. Desplegar en Koyeb (desde UI o CLI)
-koyeb service create farmacia-web \
-  --docker tu-usuario/farmacia-web:latest \
-  --ports 8080:http \
-  --env DATABASE_URL=jdbc:postgresql://host:5432/farmacia \
-  --env DATABASE_USER=postgres \
-  --env DATABASE_PASSWORD=tu_password
+# 4. Configurar ping anti-sleep (GitHub Actions)
+# secret: RENDER_HEALTHCHECK_URL=https://tu-app.onrender.com/api/dashboard/kpis
 ```
 
 ### 2. Testing Local con Docker Compose
@@ -104,9 +102,9 @@ Para producción, puedes usar cualquiera de estos proveedores:
 |-----------|-----------|---------|
 | **Neon** | ✅ | 0.5 GB storage, auto-scaling |
 | **Supabase** | ✅ | 500 MB storage, 2 GB bandwidth |
-| **Koyeb** | ✅ | Managed PostgreSQL en su plataforma |
+| **Render PostgreSQL** | ⚠️ | Generalmente pago en planes recientes |
 | **ElephantSQL** | ✅ | 20 MB storage (limitado) |
-| **Render** | ⚠️ | 256 MB, expira tras 90 días inactividad |
+| **Aiven** | ⚠️ | Trial, no siempre gratis permanente |
 
 ## Variables de Entorno Necesarias
 
@@ -197,18 +195,18 @@ Este endpoint retorna los KPIs principales del sistema y confirma que:
 ## Próximos Pasos
 
 1. **Testing local**: Sigue [LOCAL_TESTING.md](./LOCAL_TESTING.md)
-2. **Despliegue en Koyeb**: Sigue [KOYEB_DEPLOY.md](./KOYEB_DEPLOY.md)
+2. **Despliegue en Render**: Sigue [RENDER_DEPLOY.md](./RENDER_DEPLOY.md)
 3. **Configurar base de datos**: Elige un proveedor PostgreSQL gratuito
 4. **Verificar endpoints**: Prueba todos los endpoints de API
 
 ## Troubleshooting
 
 Ver secciones de troubleshooting en:
-- [KOYEB_DEPLOY.md](./KOYEB_DEPLOY.md#troubleshooting)
+- [RENDER_DEPLOY.md](./RENDER_DEPLOY.md#troubleshooting-rápido)
 - [LOCAL_TESTING.md](./LOCAL_TESTING.md#troubleshooting)
 
 ## Recursos
 
 - Repositorio GitHub: (agregar tu URL)
-- Demo en vivo: (agregar URL de Koyeb una vez desplegado)
-- Documentación Koyeb: https://www.koyeb.com/docs
+- Demo en vivo: (agregar URL de Render una vez desplegado)
+- Documentación Render: https://render.com/docs

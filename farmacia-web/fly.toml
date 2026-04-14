@@ -1,5 +1,10 @@
-# fly.toml - Configuración para Fly.io
-# Documentación: https://fly.io/docs/reference/configuration/
+# fly.toml - Configuración ANTIGUA para Fly.io (DESCONTINUADA)
+#
+# NOTA IMPORTANTE: Fly.io ahora requiere tarjeta de crédito y cobra por uso.
+# USO RECOMENDADO: Usar Koyeb en su lugar (ver KOYEB_DEPLOY.md para guía completa)
+#
+# Este archivo se mantiene solo por referencia histórica.
+# Documentación anterior: https://fly.io/docs/reference/configuration/
 
 app = "farmacia-demo"
 primary_region = "gru" # São Paulo - más cercano a Argentina

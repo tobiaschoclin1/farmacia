@@ -9,7 +9,7 @@
 [![JavaFX](https://img.shields.io/badge/JavaFX-22.0.1-4B8BBE?style=flat-square)](https://gluonhq.com/products/javafx/)
 [![SQLite](https://img.shields.io/badge/SQLite-3.46+-003B57?style=flat-square&logo=sqlite)](https://www.sqlite.org/)
 
-[Demo Online](https://farmacia-demo.fly.dev) • [Documentación](#-estructura-del-proyecto) • [Instalación](#-instalación)
+[🌐 Demo Online en Render](#-deploy-web-gratuito-render--cron-job) • [Documentación](#-estructura-del-proyecto) • [Instalación](#-instalación)
 
 </div>
 
@@ -27,6 +27,22 @@
 | 💾 **Import/Export Excel** | ✅ | 🚧 |
 | 🌐 **Acceso Web 24/7** | ❌ | ✅ |
 | 💻 **Aplicación de Escritorio** | ✅ | ❌ |
+
+---
+
+## 🌐 Deploy Web Gratuito (Render + Cron Job)
+
+¿Quieres despliegue sin pagar? Usa **Render free tier** + ping programado para reducir reposos.
+
+### Stack recomendado
+
+- **Hosting web**: Render (free)
+- **Base de datos**: Neon PostgreSQL (free)
+- **Keep-alive**: GitHub Actions cada 10 minutos
+
+**⏱️ Tiempo de setup:** 15-20 minutos
+
+**📖 Guía paso a paso:** [RENDER_DEPLOY.md](./RENDER_DEPLOY.md)
 
 ---
 
@@ -67,7 +83,7 @@ Farmacia/
     │   ├── static/css/        # CSS web
     │   └── templates/         # Plantillas HTML (Thymeleaf)
     ├── Dockerfile             # Para deployment
-    ├── fly.toml               # Configuración Fly.io
+    ├── fly.toml               # Config antigua de Fly.io
     └── README.md              # Guía de deployment
 ```
 
@@ -128,34 +144,24 @@ mvn spring-boot:run
 
 Abre tu navegador en: [http://localhost:8080](http://localhost:8080)
 
-### Demo Online (Fly.io)
+### Demo Online (Render)
 
-La versión web está desplegada y disponible 24/7:
+La versión web se recomienda en Render free + ping anti-sleep:
 
-**🔗 [https://farmacia-demo.fly.dev](https://farmacia-demo.fly.dev)**
+**🔗 [Configurar en Render](./RENDER_DEPLOY.md)**
 
-#### Deployment en Fly.io
+#### Deploy tu propia instancia
 
 ```bash
-cd farmacia-web
+# Sigue la guía completa:
+# 1. Crea cuenta en Render (gratuita)
+# 2. Configura PostgreSQL en Neon (gratuito)
+# 3. Configura ping anti-sleep con GitHub Actions
 
-# Login en Fly.io (se requiere cuenta gratuita)
-fly auth login
-
-# Lanzar aplicación
-fly launch --copy-config --name farmacia-demo
-
-# Crear volumen para persistencia
-fly volumes create farmacia_data --region gru --size 1
-
-# Deploy
-fly deploy
-
-# Abrir en navegador
-fly open
+# Ver: RENDER_DEPLOY.md
 ```
 
-Ver [farmacia-web/README.md](farmacia-web/README.md) para más detalles sobre deployment.
+Ver [RENDER_DEPLOY.md](./RENDER_DEPLOY.md) para guía paso a paso.
 
 ---
 

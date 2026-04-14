@@ -6,6 +6,7 @@ WORKDIR /build
 # Copiar POMs primero para aprovechar cache de Docker
 COPY pom.xml .
 COPY farmacia-core/pom.xml farmacia-core/
+COPY farmacia-desktop/pom.xml farmacia-desktop/
 COPY farmacia-web/pom.xml farmacia-web/
 
 # Descargar dependencias (se cachea si los POMs no cambian)
@@ -35,14 +36,14 @@ COPY --from=build --chown=farmacia:farmacia /build/app.jar app.jar
 # Cambiar a usuario no-root
 USER farmacia
 
-# Exponer puerto (Koyeb lo detecta automáticamente)
+# Exponer puerto HTTP
 EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8080/api/dashboard/kpis || exit 1
 
-# Variables de entorno por defecto (Koyeb las sobreescribe)
+# Variables de entorno por defecto (la plataforma puede sobrescribirlas)
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
 ENV PORT=8080
 

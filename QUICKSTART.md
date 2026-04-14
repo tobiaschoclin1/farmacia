@@ -27,71 +27,49 @@ mvn spring-boot:run
 
 ---
 
-## 🌍 Deployment Web (Fly.io)
+## 🌍 Deployment Web Gratis (Render + Cron Job)
 
-### Instalación Fly CLI
+### ⏱️ Tiempo: 15-20 minutos | Costo: $0
 
-**macOS:**
-```bash
-brew install flyctl
-```
+**Qué esperar:**
+- ✅ Plan gratuito
+- ✅ Deploy simple con Docker
+- ⚠️ El servicio puede dormir por inactividad
+- ✅ Mitigación con ping cada 10 minutos
 
-**Linux/WSL:**
-```bash
-curl -L https://fly.io/install.sh | sh
-```
+### Guía Rápida
 
-**Windows (PowerShell):**
-```powershell
-iwr https://fly.io/install.ps1 -useb | iex
-```
+**1. PostgreSQL Gratuito (Neon):**
+   - Ve a https://neon.tech/ → Sign up
+   - Crea proyecto "farmacia"
+   - Copia la CONNECTION STRING
 
-### Deploy paso a paso
+**2. Deploy en Render:**
+   - Ve a https://render.com/ → Sign up
+   - Click "New" → "Web Service"
+   - Conecta repositorio Farmacia
+   - Environment: `Docker`
+   - Dockerfile path: `./Dockerfile`
+   - Agrega env vars (DATABASE_URL, etc)
+   - Deploy
 
-```bash
-# 1. Login (crear cuenta gratis si no tienes)
-fly auth login
+**3. Anti-sleep con cron:**
+   - En GitHub crea secret `RENDER_HEALTHCHECK_URL`
+   - Valor: `https://tu-app.onrender.com/api/dashboard/kpis`
+   - El workflow `.github/workflows/keep-render-awake.yml` hace ping cada 10 min
 
-# 2. Ir al módulo web
-cd farmacia-web
+**4. ¡Listo!**
+   - Espera 2-3 minutos
+   - Accede a la URL que Render te asigna
 
-# 3. Lanzar app (primera vez)
-fly launch --copy-config --name farmacia-demo
+📖 **Guía paso a paso completa:** [RENDER_DEPLOY.md](./RENDER_DEPLOY.md)
 
-# 4. Crear volumen persistente para SQLite
-fly volumes create farmacia_data --region gru --size 1
+---
 
-# 5. Deploy
-fly deploy
+## Alternativas
 
-# 6. Abrir en navegador
-fly open
-
-# 7. Ver logs en tiempo real
-fly logs
-```
-
-### Comandos útiles Fly.io
-
-```bash
-# Ver status
-fly status
-
-# SSH a la máquina
-fly ssh console
-
-# Ver métricas
-fly dashboard
-
-# Escalar (cambiar RAM/CPU)
-fly scale memory 512
-
-# Ver apps
-fly apps list
-
-# Destruir app
-fly apps destroy farmacia-demo
-```
+⚠️ **Nota:** Fly.io y Koyeb pueden requerir pago/tarjeta según plan.  
+Para $0, usar Render free + ping anti-sleep.
 
 ---
 
@@ -100,6 +78,9 @@ fly apps destroy farmacia-demo
 ```
 Farmacia/
 ├── pom.xml                     # Maven parent
+├── .github/
+│   └── workflows/
+│       └── keep-render-awake.yml
 ├── farmacia-core/              # Lógica compartida
 │   ├── pom.xml
 │   └── src/main/
@@ -124,17 +105,18 @@ Farmacia/
 │               └── theme-professional.css
 │
 └── farmacia-web/               # App Spring Boot
-    ├── pom.xml
-    ├── Dockerfile
-    ├── fly.toml                # Config Fly.io
-    └── src/main/
-        ├── java/com/tobias/web/
-        │   ├── FarmaciaWebApplication.java
-        │   └── controller/     # DashboardController, etc.
-        └── resources/
-            ├── static/css/     # theme-professional.css
-            ├── templates/      # index.html, etc.
-            └── application.properties
+   ├── pom.xml
+   ├── Dockerfile
+   ├── fly.toml                # Config antigua Fly.io
+   ├── README.md
+   └── src/main/
+      ├── java/com/tobias/web/
+      │   ├── FarmaciaWebApplication.java
+      │   └── controller/     # DashboardController, etc.
+      └── resources/
+         ├── static/css/     # theme-professional.css
+         ├── templates/      # index.html, etc.
+         └── application.properties
 ```
 
 ---
@@ -173,21 +155,12 @@ mvn clean
 mvn install -DskipTests
 ```
 
-### Fly.io deployment falla
+### Render deployment falla
 
-```bash
-# Ver logs detallados
-fly logs
-
-# SSH a la máquina
-fly ssh console
-
-# Verificar volumen existe
-fly volumes list
-
-# Reiniciar app
-fly apps restart farmacia-demo
-```
+- Revisar logs en el dashboard de Render
+- Verificar variables: `DATABASE_URL`, `DATABASE_USER`, `DATABASE_PASSWORD`
+- Confirmar que el endpoint de ping sea: `/api/dashboard/kpis`
+- Forzar redeploy manual desde Render si quedó en estado fallido
 
 ---
 
@@ -195,9 +168,7 @@ fly apps restart farmacia-demo
 
 - **Código fuente**: `/Users/tchoclin/Documents/Farmacia`
 - **Demo web local**: http://localhost:8080
-- **Demo online**: https://farmacia-demo.fly.dev
-- **API**: https://farmacia-demo.fly.dev/api/dashboard/kpis
-- **Documentación Fly.io**: https://fly.io/docs
+- **Deploy gratuito**: [Render (ver RENDER_DEPLOY.md)](./RENDER_DEPLOY.md)
 - **Spring Boot Docs**: https://docs.spring.io/spring-boot/docs/current/reference/html/
 - **JavaFX Docs**: https://openjfx.io/
 
@@ -208,22 +179,23 @@ fly apps restart farmacia-demo
 - [ ] Compilación exitosa: `mvn clean install`
 - [ ] Tests pasan: `mvn test`
 - [ ] App corre local: `mvn spring-boot:run`
-- [ ] Dockerfile funciona: `docker build -t farmacia-web .`
-- [ ] Cuenta Fly.io creada
-- [ ] Fly CLI instalado
-- [ ] Volumen creado en Fly.io
-- [ ] Variables de entorno configuradas (si las hay)
+- [ ] Dockerfile funciona: `docker build -f farmacia-web/Dockerfile -t farmacia-web .`
+- [ ] Cuenta Render creada (gratuita)
+- [ ] Cuenta Neon creada (PostgreSQL gratis)
+- [ ] Variables de entorno de base de datos configuradas
+- [ ] Secret `RENDER_HEALTHCHECK_URL` configurado en GitHub
 
 ---
 
 ## 🎯 Próximos Pasos
 
-1. ✅ **Completar vistas faltantes en web** (Entradas, Salidas, Stock, Import/Export)
-2. ✅ **Agregar autenticación** (Spring Security)
-3. ✅ **Tests unitarios** para controllers y services
-4. ✅ **CI/CD con GitHub Actions** (deploy automático a Fly.io)
-5. ✅ **Monitoreo** (métricas con Spring Actuator)
-6. ✅ **Dominio personalizado** en Fly.io
+1. ✅ **Deploying en Render** (gratis + ping anti-sleep)
+2. ✅ **Completar vistas faltantes en web** (Entradas, Salidas, Stock, Import/Export)
+3. ✅ **Agregar autenticación** (Spring Security)
+4. ✅ **Tests unitarios** para controllers y services
+5. ✅ **CI/CD con GitHub Actions** (deploy y keep-alive)
+6. ✅ **Monitoreo** (métricas con Spring Actuator)
+7. ✅ **Dominio personalizado** en Render
 
 ---
 
