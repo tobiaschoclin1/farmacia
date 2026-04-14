@@ -28,6 +28,16 @@ public class DataSourceConfig {
         // Normalizar la URL para que siempre tenga el prefijo jdbc:
         String normalizedUrl = normalizeJdbcUrl(databaseUrl);
 
+        // Limpiar parámetros incompatibles de Neon
+        normalizedUrl = cleanNeonParameters(normalizedUrl);
+
+        // Cargar explícitamente el driver PostgreSQL
+        try {
+            Class.forName(driverClassName);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("PostgreSQL driver not found in classpath", e);
+        }
+
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(normalizedUrl);
         config.setUsername(username);
@@ -72,6 +82,28 @@ public class DataSourceConfig {
 
         // Si no reconocemos el formato, lanzar excepción
         throw new IllegalArgumentException("Unsupported database URL format: " + url);
+    }
+
+    /**
+     * Limpia parámetros incompatibles que Neon agrega automáticamente.
+     * El parámetro channel_binding=require puede causar problemas con algunas versiones del driver.
+     */
+    private String cleanNeonParameters(String url) {
+        if (url == null) return null;
+
+        // Eliminar channel_binding=require (incompatible con algunos drivers PostgreSQL)
+        url = url.replaceAll("[&?]channel_binding=require", "");
+
+        // Si quedó con ? al final, eliminarlo
+        url = url.replaceAll("\\?$", "");
+
+        // Si quedó con & duplicado, limpiarlo
+        url = url.replaceAll("&&", "&");
+
+        // Si el primer parámetro quedó con &, cambiarlo a ?
+        url = url.replaceAll("\\?&", "?");
+
+        return url;
     }
 
     /**
