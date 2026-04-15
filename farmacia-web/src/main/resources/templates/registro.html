@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Farmacia</title>
+    <link rel="stylesheet" href="/css/theme-sidebar.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #F5F1E8 0%, #E8E3D5 100%);
+            padding: 20px;
+        }
+
+        .auth-card {
+            background-color: var(--surface);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 48px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            font-weight: 700;
+            margin: 0 auto 24px;
+        }
+
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-input-wrapper {
+            position: relative;
+        }
+
+        .form-input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            pointer-events: none;
+        }
+
+        .form-input-with-icon {
+            padding-left: 44px;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .auth-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .alert-error {
+            background-color: var(--danger-light);
+            border: 1px solid var(--danger);
+            color: var(--danger-dark);
+        }
+
+        .button-full {
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .password-requirements {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            padding-left: 12px;
+        }
+
+        .password-requirements li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">+</div>
+                <h1 class="auth-title">Crear Cuenta</h1>
+                <p class="auth-subtitle">Completa tus datos para registrarte</p>
+            </div>
+
+            <div id="error-message" style="display: none;" class="alert alert-error"></div>
+
+            <form id="registroForm" onsubmit="handleRegistro(event)">
+                <div class="form-group">
+                    <label class="form-label" for="nombre">Nombre Completo</label>
+                    <div class="form-input-wrapper">
+                        <svg class="form-input-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <input type="text" class="form-input-with-icon" id="nombre" name="nombre"
+                               placeholder="Juan Pérez" required autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Correo Electrónico</label>
+                    <div class="form-input-wrapper">
+                        <svg class="form-input-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <input type="email" class="form-input-with-icon" id="email" name="email"
+                               placeholder="tu@email.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Contraseña</label>
+                    <div class="form-input-wrapper">
+                        <svg class="form-input-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" class="form-input-with-icon" id="password" name="password"
+                               placeholder="••••••••" required minlength="8">
+                    </div>
+                    <ul class="password-requirements">
+                        <li>Mínimo 8 caracteres</li>
+                        <li>Se recomienda incluir números y símbolos</li>
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">Confirmar Contraseña</label>
+                    <div class="form-input-wrapper">
+                        <svg class="form-input-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" class="form-input-with-icon" id="confirmPassword" name="confirmPassword"
+                               placeholder="••••••••" required minlength="8">
+                    </div>
+                </div>
+
+                <button type="submit" class="button button-full" id="registroButton">
+                    Crear Cuenta
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p style="color: var(--text-secondary); font-size: 14px;">
+                    ¿Ya tienes una cuenta?
+                    <a href="/login" class="auth-link">Inicia sesión aquí</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function handleRegistro(event) {
+            event.preventDefault();
+
+            const nombre = document.getElementById('nombre').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const button = document.getElementById('registroButton');
+
+            // Validar contraseñas
+            if (password !== confirmPassword) {
+                showError('Las contraseñas no coinciden');
+                return;
+            }
+
+            if (password.length < 8) {
+                showError('La contraseña debe tener al menos 8 caracteres');
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = 'Creando cuenta...';
+
+            try {
+                const response = await fetch('/api/auth/registro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nombre, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Redirigir al login con mensaje de éxito
+                    window.location.href = '/login?registered=true';
+                } else {
+                    showError(data.error || 'Error al crear la cuenta');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error de conexión. Por favor intenta de nuevo.');
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Crear Cuenta';
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
