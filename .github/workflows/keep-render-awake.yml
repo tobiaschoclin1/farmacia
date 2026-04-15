@@ -2,17 +2,20 @@ name: Keep Render Awake
 
 on:
   schedule:
-    - cron: '*/14 * * * *'  # Every 14 minutes (Render free tier sleeps after 15 min)
+    - cron: '*/10 * * * *'  # Every 10 minutes (safer margin for Render free tier)
   workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Render health endpoint
+      - name: Ping Render service to prevent sleep
         env:
-          HEALTH_URL: ${{ secrets.RENDER_HEALTHCHECK_URL || 'https://farmacia-2xm1.onrender.com/health' }}
+          BASE_URL: ${{ secrets.RENDER_BASE_URL || 'https://farmacia-2xm1.onrender.com' }}
         run: |
           echo "Pinging Render service to prevent sleep..."
-          curl --fail --silent --show-error --max-time 30 "$HEALTH_URL" || echo "Ping failed but continuing..."
+          echo "1. Health check..."
+          curl --fail --silent --show-error --max-time 30 "$BASE_URL/health" && echo "✓ Health OK" || echo "✗ Health failed"
+          echo "2. Homepage request..."
+          curl --silent --show-error --max-time 30 "$BASE_URL/" > /dev/null && echo "✓ Homepage OK" || echo "✗ Homepage failed"
           echo "Ping completed at $(date)"
