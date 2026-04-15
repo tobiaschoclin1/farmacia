@@ -10,8 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Render health endpoint
+        env:
+          HEALTH_URL: ${{ secrets.RENDER_HEALTHCHECK_URL || 'https://farmacia-2xm1.onrender.com/health' }}
         run: |
           echo "Pinging Render service to prevent sleep..."
-          curl --fail --silent --show-error --max-time 30 \
-            "https://farmacia-2xm1.onrender.com/health" || echo "Ping failed but continuing..."
+          curl --fail --silent --show-error --max-time 30 "$HEALTH_URL" || echo "Ping failed but continuing..."
           echo "Ping completed at $(date)"
