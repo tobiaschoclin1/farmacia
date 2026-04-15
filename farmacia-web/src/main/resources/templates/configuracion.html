@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración - Farmacia</title>
+    <link rel="stylesheet" href="/css/theme-sidebar.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-logo">
+                    <div class="sidebar-logo-icon">+</div>
+                    <span class="sidebar-logo-text">Farmacia</span>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <a href="/" class="nav-item">
+                        <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Gestión</div>
+                    <a href="/productos" class="nav-item">
+                        <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                        <span>Productos</span>
+                    </a>
+                    <a href="/stock" class="nav-item">
+                        <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M3 3h18v18H3z M3 9h18 M9 21V9"></path>
+                        </svg>
+                        <span>Stock</span>
+                    </a>
+                    <a href="/vencimientos" class="nav-item">
+                        <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <span>Vencimientos</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Movimientos</div>
+                    <a href="/entradas" class="nav-item">
+                        <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <polyline points="19 12 12 19 5 12"></polyline>
+                        </svg>
+                        <span>Entradas</span>
+                    </a>
+                    <a href="/salidas" class="nav-item">
+                        <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <line x1="12" y1="19" x2="12" y2="5"></line>
+                            <polyline points="5 12 12 5 19 12"></polyline>
+                        </svg>
+                        <span>Salidas</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Sistema</div>
+                    <a href="/configuracion" class="nav-item active">
+                        <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>Configuración</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="/usuario" class="sidebar-profile">
+                    <div class="sidebar-avatar">TC</div>
+                    <div class="sidebar-profile-info">
+                        <div class="sidebar-profile-name">Tobias Choclin</div>
+                        <div class="sidebar-profile-role">Administrador</div>
+                    </div>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="main-wrapper">
+            <div class="main-content">
+                <div class="page-header">
+                    <h1 class="page-title">Configuración</h1>
+                    <p class="page-subtitle">Ajustes del sistema y preferencias de la farmacia</p>
+                </div>
+
+                <div class="settings-grid">
+                    <!-- Información General -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title">Información de la Farmacia</h3>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Nombre de la Farmacia</h4>
+                                <p>Farmacia Principal</p>
+                            </div>
+                            <button class="button secondary small" onclick="editarNombre()">Editar</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Dirección</h4>
+                                <p>Av. Principal 123, Ciudad, País</p>
+                            </div>
+                            <button class="button secondary small" onclick="editarDireccion()">Editar</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Teléfono de Contacto</h4>
+                                <p>+54 9 11 1234-5678</p>
+                            </div>
+                            <button class="button secondary small" onclick="editarTelefono()">Editar</button>
+                        </div>
+                    </div>
+
+                    <!-- Alertas y Notificaciones -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title">Alertas y Notificaciones</h3>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Días de Alerta de Vencimiento</h4>
+                                <p>Alertar productos que vencen en los próximos días</p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <input type="number" id="diasVencimiento" value="30" min="1" max="365"
+                                       style="width: 80px; text-align: center;">
+                                <span style="color: var(--text-secondary);">días</span>
+                            </div>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Notificaciones de Stock Bajo</h4>
+                                <p>Recibir alertas cuando un producto esté por debajo del stock mínimo</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifStockBajo" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Notificaciones por Email</h4>
+                                <p>Enviar resumen diario por correo electrónico</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifEmail">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Stock y Productos -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title">Gestión de Stock</h3>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Stock Mínimo por Defecto</h4>
+                                <p>Cantidad mínima predeterminada para nuevos productos</p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <input type="number" id="stockMinimo" value="10" min="0"
+                                       style="width: 80px; text-align: center;">
+                                <span style="color: var(--text-secondary);">unidades</span>
+                            </div>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Permitir Stock Negativo</h4>
+                                <p>Permitir registrar salidas aunque no haya stock suficiente</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="stockNegativo">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Auto-descuento por Vencimiento</h4>
+                                <p>Descontar automáticamente productos vencidos del stock</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="autoDescuento" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sistema -->
+                    <div class="settings-section">
+                        <h3 class="settings-section-title">Sistema</h3>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Base de Datos</h4>
+                                <p>PostgreSQL - farmacia_db</p>
+                            </div>
+                            <span class="badge success">Conectada</span>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Versión del Sistema</h4>
+                                <p>v2.0.0</p>
+                            </div>
+                            <button class="button secondary small">Ver Novedades</button>
+                        </div>
+
+                        <div class="settings-item">
+                            <div class="settings-item-info">
+                                <h4>Exportar Datos</h4>
+                                <p>Descargar backup completo de la base de datos</p>
+                            </div>
+                            <button class="button secondary small" onclick="exportarDatos()">Exportar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div style="margin-top: 32px; display: flex; gap: 12px; justify-content: flex-end;">
+                    <button class="button ghost" onclick="resetConfig()">Restablecer</button>
+                    <button class="button" onclick="guardarConfiguracion()">Guardar Cambios</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <style>
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+    </style>
+
+    <script>
+        function editarNombre() {
+            const nombre = prompt('Ingrese el nombre de la farmacia:', 'Farmacia Principal');
+            if (nombre) {
+                console.log('Nuevo nombre:', nombre);
+                alert('Nombre actualizado');
+            }
+        }
+
+        function editarDireccion() {
+            const direccion = prompt('Ingrese la dirección:', 'Av. Principal 123, Ciudad, País');
+            if (direccion) {
+                console.log('Nueva dirección:', direccion);
+                alert('Dirección actualizada');
+            }
+        }
+
+        function editarTelefono() {
+            const telefono = prompt('Ingrese el teléfono:', '+54 9 11 1234-5678');
+            if (telefono) {
+                console.log('Nuevo teléfono:', telefono);
+                alert('Teléfono actualizado');
+            }
+        }
+
+        function exportarDatos() {
+            alert('Iniciando exportación de datos...');
+            console.log('Exportando datos');
+        }
+
+        function guardarConfiguracion() {
+            const config = {
+                diasVencimiento: document.getElementById('diasVencimiento').value,
+                notifStockBajo: document.getElementById('notifStockBajo').checked,
+                notifEmail: document.getElementById('notifEmail').checked,
+                stockMinimo: document.getElementById('stockMinimo').value,
+                stockNegativo: document.getElementById('stockNegativo').checked,
+                autoDescuento: document.getElementById('autoDescuento').checked
+            };
+
+            console.log('Guardando configuración:', config);
+            alert('Configuración guardada correctamente');
+        }
+
+        function resetConfig() {
+            if (confirm('¿Está seguro de restablecer la configuración a valores predeterminados?')) {
+                document.getElementById('diasVencimiento').value = 30;
+                document.getElementById('notifStockBajo').checked = true;
+                document.getElementById('notifEmail').checked = false;
+                document.getElementById('stockMinimo').value = 10;
+                document.getElementById('stockNegativo').checked = false;
+                document.getElementById('autoDescuento').checked = true;
+                alert('Configuración restablecida');
+            }
+        }
+    </script>
+</body>
+</html>
