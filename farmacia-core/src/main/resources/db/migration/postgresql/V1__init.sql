@@ -1,9 +1,4 @@
-CREATE TABLE IF NOT EXISTS usuarios (
-  id SERIAL PRIMARY KEY,
-  username VARCHAR(255) UNIQUE NOT NULL,
-  rol VARCHAR(20) NOT NULL CHECK (rol IN ('ADMIN','OPERADOR')),
-  activo BOOLEAN NOT NULL DEFAULT true
-);
+-- Nota: La tabla usuarios se define en V6__usuarios.sql con estructura actualizada
 
 CREATE TABLE IF NOT EXISTS productos (
   id SERIAL PRIMARY KEY,
