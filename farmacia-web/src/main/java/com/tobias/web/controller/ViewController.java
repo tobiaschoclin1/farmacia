@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ViewController {
 
     @GetMapping("/")
-    public String index() {
-        return "index";
+    public String splash() {
+        return "splash";
     }
 
     @GetMapping("/dashboard")
     public String dashboard() {
-        return "dashboard";
+        return "index";
     }
 
     @GetMapping("/productos")

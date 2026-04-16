@@ -238,7 +238,7 @@
                     // Guardar sesión
                     sessionStorage.setItem('user', JSON.stringify(data.user));
                     // Redirigir al dashboard
-                    window.location.href = '/';
+                    window.location.href = '/dashboard';
                 } else {
                     showError(data.error || 'Error al iniciar sesión');
                 }
