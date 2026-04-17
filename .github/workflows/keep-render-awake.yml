@@ -2,20 +2,25 @@ name: Keep Render Awake
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # Every 10 minutes (safer margin for Render free tier)
-  workflow_dispatch:
+    # Corre cada 10 minutos (Render free tier duerme después de 15 min de inactividad)
+    - cron: '*/10 * * * *'
+  workflow_dispatch:  # Permite ejecución manual desde GitHub Actions
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Render service to prevent sleep
-        env:
-          BASE_URL: ${{ secrets.RENDER_BASE_URL || 'https://farmacia-2xm1.onrender.com' }}
+      - name: Ping Render service
         run: |
-          echo "Pinging Render service to prevent sleep..."
-          echo "1. Health check..."
-          curl --fail --silent --show-error --max-time 30 "$BASE_URL/health" && echo "✓ Health OK" || echo "✗ Health failed"
-          echo "2. Homepage request..."
-          curl --silent --show-error --max-time 30 "$BASE_URL/" > /dev/null && echo "✓ Homepage OK" || echo "✗ Homepage failed"
-          echo "Ping completed at $(date)"
+          echo "🔔 Pinging Render service at $(date)"
+
+          # Hacer request al dashboard para mantener despierto
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://farmacia-2xm1.onrender.com/api/dashboard/kpis)
+
+          if [ "$RESPONSE" -eq 200 ]; then
+            echo "✅ Service is awake (HTTP $RESPONSE)"
+          else
+            echo "⚠️  Service responded with HTTP $RESPONSE"
+          fi
+
+          echo "Completed at $(date)"
