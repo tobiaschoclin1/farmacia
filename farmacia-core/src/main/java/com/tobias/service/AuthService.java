@@ -137,9 +137,50 @@ public class AuthService {
     }
 
     /**
-     * Busca un usuario por email
+     * Busca un usuario por email (devuelve null si no existe)
      */
-    public Optional<Usuario> buscarPorEmail(String email) throws Exception {
-        return usuarioDao.buscarPorEmail(email);
+    public Usuario buscarPorEmail(String email) {
+        try {
+            Optional<Usuario> usuarioOpt = usuarioDao.buscarPorEmail(email);
+            return usuarioOpt.orElse(null);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al buscar usuario por email", e);
+        }
+    }
+
+    /**
+     * Registra un nuevo usuario con Google OAuth
+     */
+    public Usuario registrarConGoogle(String nombre, String email, String googleId) {
+        try {
+            // Validar que el email no exista
+            if (usuarioDao.existeEmail(email)) {
+                throw new IllegalArgumentException("El email ya está registrado");
+            }
+
+            // Crear usuario sin contraseña (OAuth)
+            Usuario usuario = new Usuario();
+            usuario.setNombre(nombre);
+            usuario.setEmail(email);
+            usuario.setGoogleId(googleId);
+            usuario.setRol("USUARIO");
+            usuario.setActivo(true);
+
+            // Guardar
+            return usuarioDao.guardar(usuario);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al registrar usuario con Google", e);
+        }
+    }
+
+    /**
+     * Vincula una cuenta existente con Google ID
+     */
+    public void vincularGoogleId(Long usuarioId, String googleId) {
+        try {
+            usuarioDao.vincularGoogleId(usuarioId, googleId);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al vincular Google ID", e);
+        }
     }
 }

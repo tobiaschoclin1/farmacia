@@ -7,7 +7,8 @@ public class Usuario {
     private Long id;
     private String nombre;
     private String email;
-    private String password; // BCrypt hashed
+    private String password; // BCrypt hashed (opcional para usuarios OAuth)
+    private String googleId; // ID de Google para OAuth
     private String rol; // USUARIO, ADMINISTRADOR
     private Boolean activo;
     private LocalDateTime fechaCreacion;
@@ -21,12 +22,13 @@ public class Usuario {
     }
 
     // Constructor completo
-    public Usuario(Long id, String nombre, String email, String password, String rol, Boolean activo,
+    public Usuario(Long id, String nombre, String email, String password, String googleId, String rol, Boolean activo,
                    LocalDateTime fechaCreacion, LocalDateTime ultimoAcceso) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.password = password;
+        this.googleId = googleId;
         this.rol = rol;
         this.activo = activo;
         this.fechaCreacion = fechaCreacion;
@@ -74,6 +76,14 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 
     public String getRol() {

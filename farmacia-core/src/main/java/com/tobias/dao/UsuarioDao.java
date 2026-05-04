@@ -12,8 +12,8 @@ import java.util.Optional;
 public class UsuarioDao {
 
     public Usuario guardar(Usuario usuario) throws Exception {
-        String sql = "INSERT INTO usuarios (nombre, email, password, rol, activo, fecha_creacion) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO usuarios (nombre, email, password, google_id, rol, activo, fecha_creacion) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Db.get();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -21,9 +21,10 @@ public class UsuarioDao {
             stmt.setString(1, usuario.getNombre());
             stmt.setString(2, usuario.getEmail());
             stmt.setString(3, usuario.getPassword());
-            stmt.setString(4, usuario.getRol());
-            stmt.setBoolean(5, usuario.getActivo());
-            stmt.setObject(6, usuario.getFechaCreacion());
+            stmt.setString(4, usuario.getGoogleId());
+            stmt.setString(5, usuario.getRol());
+            stmt.setBoolean(6, usuario.getActivo());
+            stmt.setObject(7, usuario.getFechaCreacion());
 
             int affectedRows = stmt.executeUpdate();
 
@@ -44,7 +45,7 @@ public class UsuarioDao {
     }
 
     public Optional<Usuario> buscarPorEmail(String email) throws Exception {
-        String sql = "SELECT id, nombre, email, password, rol, activo, fecha_creacion, ultimo_acceso " +
+        String sql = "SELECT id, nombre, email, password, google_id, rol, activo, fecha_creacion, ultimo_acceso " +
                     "FROM usuarios WHERE email = ?";
 
         try (Connection conn = Db.get();
@@ -63,7 +64,7 @@ public class UsuarioDao {
     }
 
     public Optional<Usuario> buscarPorId(Long id) throws Exception {
-        String sql = "SELECT id, nombre, email, password, rol, activo, fecha_creacion, ultimo_acceso " +
+        String sql = "SELECT id, nombre, email, password, google_id, rol, activo, fecha_creacion, ultimo_acceso " +
                     "FROM usuarios WHERE id = ?";
 
         try (Connection conn = Db.get();
@@ -141,8 +142,21 @@ public class UsuarioDao {
         }
     }
 
+    public void vincularGoogleId(Long id, String googleId) throws Exception {
+        String sql = "UPDATE usuarios SET google_id = ? WHERE id = ?";
+
+        try (Connection conn = Db.get();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, googleId);
+            stmt.setLong(2, id);
+
+            stmt.executeUpdate();
+        }
+    }
+
     public List<Usuario> listarTodos() throws Exception {
-        String sql = "SELECT id, nombre, email, password, rol, activo, fecha_creacion, ultimo_acceso " +
+        String sql = "SELECT id, nombre, email, password, google_id, rol, activo, fecha_creacion, ultimo_acceso " +
                     "FROM usuarios ORDER BY fecha_creacion DESC";
 
         List<Usuario> usuarios = new ArrayList<>();
@@ -165,6 +179,7 @@ public class UsuarioDao {
         usuario.setNombre(rs.getString("nombre"));
         usuario.setEmail(rs.getString("email"));
         usuario.setPassword(rs.getString("password"));
+        usuario.setGoogleId(rs.getString("google_id"));
         usuario.setRol(rs.getString("rol"));
         usuario.setActivo(rs.getBoolean("activo"));
 
