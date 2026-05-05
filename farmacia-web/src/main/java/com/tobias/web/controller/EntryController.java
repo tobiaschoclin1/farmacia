@@ -14,7 +14,11 @@ import java.util.Map;
 @RequestMapping("/api/entradas")
 public class EntryController {
 
-    private final StockService stockService = new StockService();
+    private final StockService stockService;
+
+    public EntryController(StockService stockService) {
+        this.stockService = stockService;
+    }
 
     @PostMapping
     public ResponseEntity<Map<String, String>> registrarEntrada(@RequestBody EntradaRequest request) {

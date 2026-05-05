@@ -13,7 +13,11 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService = new AuthService();
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/registro")
     public ResponseEntity<Map<String, Object>> registro(@RequestBody RegistroRequest request) {

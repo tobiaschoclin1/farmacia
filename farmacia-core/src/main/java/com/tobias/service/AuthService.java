@@ -12,8 +12,8 @@ public class AuthService {
 
     private final UsuarioDao usuarioDao;
 
-    public AuthService() {
-        this.usuarioDao = new UsuarioDao();
+    public AuthService(UsuarioDao usuarioDao) {
+        this.usuarioDao = usuarioDao;
     }
 
     /**

@@ -11,7 +11,11 @@ import java.util.Map;
 @RequestMapping("/api/salidas")
 public class ExitController {
 
-    private final StockService stockService = new StockService();
+    private final StockService stockService;
+
+    public ExitController(StockService stockService) {
+        this.stockService = stockService;
+    }
 
     @PostMapping("/fefo")
     public ResponseEntity<Map<String, Object>> registrarSalidaFefo(@RequestBody SalidaFefoRequest request) {
