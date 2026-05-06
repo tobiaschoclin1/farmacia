@@ -7,8 +7,7 @@ CREATE TABLE usuarios (
     id BIGSERIAL PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255),
-    google_id VARCHAR(255),
+    password VARCHAR(255) NOT NULL,
     rol VARCHAR(50) NOT NULL DEFAULT 'USUARIO',
     activo BOOLEAN NOT NULL DEFAULT TRUE,
     fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -18,7 +17,6 @@ CREATE TABLE usuarios (
 -- Índices
 CREATE INDEX idx_usuarios_email ON usuarios(email);
 CREATE INDEX idx_usuarios_rol ON usuarios(rol);
-CREATE INDEX idx_usuarios_google_id ON usuarios(google_id);
 
 -- Usuario administrador por defecto (password: admin123)
 -- Hash SHA-256 de "admin123" en Base64
