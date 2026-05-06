@@ -2,12 +2,21 @@ package com.tobias.web.controller;
 
 import com.tobias.model.Usuario;
 import com.tobias.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,12 +65,28 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         Map<String, Object> response = new HashMap<>();
 
         try {
             logger.info("Intento de login para email: {}", request.getEmail());
             Usuario usuario = authService.login(request.getEmail(), request.getPassword());
+
+            // Crear autenticación de Spring Security
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                usuario.getEmail(),
+                null,
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRol()))
+            );
+
+            // Establecer en el contexto de seguridad
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+            securityContext.setAuthentication(authentication);
+            SecurityContextHolder.setContext(securityContext);
+
+            // Guardar en la sesión HTTP
+            HttpSession session = httpRequest.getSession(true);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
 
             Map<String, Object> userData = new HashMap<>();
             userData.put("id", usuario.getId());
@@ -72,7 +97,7 @@ public class AuthController {
             response.put("success", true);
             response.put("user", userData);
 
-            logger.info("Login exitoso para usuario: {}", usuario.getEmail());
+            logger.info("Login exitoso para usuario: {} con sesión creada", usuario.getEmail());
             return ResponseEntity.ok(response);
 
         } catch (IllegalArgumentException e) {
