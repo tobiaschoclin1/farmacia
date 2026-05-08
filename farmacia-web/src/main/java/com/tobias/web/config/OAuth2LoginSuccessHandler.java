@@ -19,7 +19,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 
     public OAuth2LoginSuccessHandler(AuthService authService) {
         this.authService = authService;
-        setDefaultTargetUrl("/");
+        setDefaultTargetUrl("/dashboard");
     }
 
     @Override
