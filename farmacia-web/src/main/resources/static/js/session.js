@@ -2,22 +2,49 @@
 (function() {
     'use strict';
 
-    // Obtener usuario de la sesión
-    function getCurrentUser() {
-        const userJson = sessionStorage.getItem('user');
-        if (!userJson) {
-            // Si no hay sesión, redirigir al login (excepto si ya estamos en login/registro)
-            if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/registro')) {
-                window.location.href = '/login';
-            }
-            return null;
+    let currentUser = null;
+
+    // Obtener usuario de la sesión (primero intenta sessionStorage, luego servidor)
+    async function getCurrentUser() {
+        // Si ya tenemos el usuario en memoria, devolverlo
+        if (currentUser) {
+            return currentUser;
         }
-        return JSON.parse(userJson);
+
+        // Intentar obtener de sessionStorage
+        const userJson = sessionStorage.getItem('user');
+        if (userJson) {
+            currentUser = JSON.parse(userJson);
+            return currentUser;
+        }
+
+        // Si no está en sessionStorage, verificar en el servidor
+        try {
+            const response = await fetch('/api/auth/me');
+            const data = await response.json();
+
+            if (data.authenticated && data.user) {
+                // Guardar en sessionStorage para futuras consultas
+                sessionStorage.setItem('user', JSON.stringify(data.user));
+                currentUser = data.user;
+                return currentUser;
+            }
+        } catch (error) {
+            console.error('Error al verificar autenticación:', error);
+        }
+
+        // Si no hay sesión, redirigir al login (excepto si ya estamos en login/registro)
+        if (!window.location.pathname.includes('/login') &&
+            !window.location.pathname.includes('/registro') &&
+            !window.location.pathname.includes('/')) {
+            window.location.href = '/login';
+        }
+        return null;
     }
 
     // Actualizar información del usuario en el sidebar
-    function updateUserProfile() {
-        const user = getCurrentUser();
+    async function updateUserProfile() {
+        const user = await getCurrentUser();
         if (!user) return;
 
         // Actualizar nombre
@@ -45,7 +72,8 @@
     // Cerrar sesión
     window.logout = function() {
         sessionStorage.removeItem('user');
-        window.location.href = '/login';
+        currentUser = null;
+        window.location.href = '/logout';
     };
 
     // Ejecutar al cargar la página

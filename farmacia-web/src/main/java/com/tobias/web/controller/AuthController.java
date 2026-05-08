@@ -64,6 +64,56 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> getCurrentUser() {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            // Verificar si hay autenticación y no es anónima
+            if (authentication == null || !authentication.isAuthenticated() ||
+                authentication.getPrincipal().equals("anonymousUser")) {
+                response.put("authenticated", false);
+                return ResponseEntity.ok(response);
+            }
+
+            // Obtener email del principal (puede ser String o OAuth2User)
+            String email;
+            if (authentication.getPrincipal() instanceof org.springframework.security.oauth2.core.user.OAuth2User) {
+                org.springframework.security.oauth2.core.user.OAuth2User oAuth2User =
+                    (org.springframework.security.oauth2.core.user.OAuth2User) authentication.getPrincipal();
+                email = oAuth2User.getAttribute("email");
+            } else {
+                email = authentication.getName();
+            }
+
+            // Buscar usuario por email
+            Usuario usuario = authService.buscarPorEmail(email);
+
+            if (usuario == null) {
+                response.put("authenticated", false);
+                return ResponseEntity.ok(response);
+            }
+
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("id", usuario.getId());
+            userData.put("nombre", usuario.getNombre());
+            userData.put("email", usuario.getEmail());
+            userData.put("rol", usuario.getRol());
+
+            response.put("authenticated", true);
+            response.put("user", userData);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("Error al obtener usuario actual: ", e);
+            response.put("authenticated", false);
+            return ResponseEntity.ok(response);
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         Map<String, Object> response = new HashMap<>();
