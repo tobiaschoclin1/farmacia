@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
-    <title>Entradas - Farmacia</title>
+    <title th:text="#{entradas.title} + ' - ' + #{app.name}">Entries - Pharmacy</title>
     <link rel="stylesheet" href="/css/theme-sidebar.css">
 </head>
 <body>
@@ -13,14 +13,14 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <a href="/dashboard" class="sidebar-logo">
-                    <img src="/img/logo.png" alt="Farmacia" style="width: 40px; height: 40px; border-radius: 10px; object-fit: cover;">
-                    <span class="sidebar-logo-text">Farmacia</span>
+                    <img src="/img/logo.png" th:alt="#{app.name}" style="width: 40px; height: 40px; border-radius: 10px; object-fit: cover;">
+                    <span class="sidebar-logo-text" th:text="#{app.name}">Pharmacy</span>
                 </a>
             </div>
 
             <nav class="sidebar-nav">
                 <div class="nav-section">
-                    <div class="nav-section-title">Principal</div>
+                    <div class="nav-section-title" th:text="#{nav.principal}">Main</div>
                     <a href="/dashboard" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <rect x="3" y="3" width="7" height="7" rx="1"></rect>
@@ -28,61 +28,61 @@
                             <rect x="14" y="14" width="7" height="7" rx="1"></rect>
                             <rect x="3" y="14" width="7" height="7" rx="1"></rect>
                         </svg>
-                        <span>Dashboard</span>
+                        <span th:text="#{nav.dashboard}">Dashboard</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">Gestión</div>
+                    <div class="nav-section-title" th:text="#{nav.gestion}">Management</div>
                     <a href="/productos" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                             <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                             <line x1="12" y1="22.08" x2="12" y2="12"></line>
                         </svg>
-                        <span>Productos</span>
+                        <span th:text="#{nav.productos}">Products</span>
                     </a>
                     <a href="/stock" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M3 3h18v18H3z M3 9h18 M9 21V9"></path>
                         </svg>
-                        <span>Stock</span>
+                        <span th:text="#{nav.stock}">Stock</span>
                     </a>
                     <a href="/vencimientos" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="10"></circle>
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
-                        <span>Vencimientos</span>
+                        <span th:text="#{nav.vencimientos}">Expirations</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">Movimientos</div>
+                    <div class="nav-section-title" th:text="#{nav.movimientos}">Movements</div>
                     <a href="/entradas" class="nav-item active">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <polyline points="19 12 12 19 5 12"></polyline>
                         </svg>
-                        <span>Entradas</span>
+                        <span th:text="#{nav.entradas}">Entries</span>
                     </a>
                     <a href="/salidas" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <line x1="12" y1="19" x2="12" y2="5"></line>
                             <polyline points="5 12 12 5 19 12"></polyline>
                         </svg>
-                        <span>Salidas</span>
+                        <span th:text="#{nav.salidas}">Exits</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">Sistema</div>
+                    <div class="nav-section-title" th:text="#{nav.sistema}">System</div>
                     <a href="/configuracion" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="3"></circle>
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                         </svg>
-                        <span>Configuración</span>
+                        <span th:text="#{nav.configuracion}">Settings</span>
                     </a>
                 </div>
             </nav>
@@ -92,7 +92,7 @@
                     <div class="sidebar-avatar">TC</div>
                     <div class="sidebar-profile-info">
                         <div class="sidebar-profile-name">Tobias Choclin</div>
-                        <div class="sidebar-profile-role">Administrador</div>
+                        <div class="sidebar-profile-role" th:text="#{profile.administrator}">Administrator</div>
                     </div>
                 </a>
             </div>

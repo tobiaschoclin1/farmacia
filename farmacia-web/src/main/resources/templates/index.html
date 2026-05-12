@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
-    <title>Dashboard - Farmacia</title>
+    <title th:text="#{dashboard.title} + ' - ' + #{app.name}">Dashboard - Pharmacy</title>
     <link rel="stylesheet" href="/css/theme-sidebar.css">
     <style>
         #loading {
@@ -20,14 +20,14 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <a href="/dashboard" class="sidebar-logo">
-                    <img src="/img/logo.png" alt="Farmacia" style="width: 40px; height: 40px; border-radius: 10px; object-fit: cover;">
-                    <span class="sidebar-logo-text">Farmacia</span>
+                    <img src="/img/logo.png" th:alt="#{app.name}" style="width: 40px; height: 40px; border-radius: 10px; object-fit: cover;">
+                    <span class="sidebar-logo-text" th:text="#{app.name}">Pharmacy</span>
                 </a>
             </div>
 
             <nav class="sidebar-nav">
                 <div class="nav-section">
-                    <div class="nav-section-title">Principal</div>
+                    <div class="nav-section-title" th:text="#{nav.principal}">Main</div>
                     <a href="/dashboard" class="nav-item active">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <rect x="3" y="3" width="7" height="7" rx="1"></rect>
@@ -35,61 +35,61 @@
                             <rect x="14" y="14" width="7" height="7" rx="1"></rect>
                             <rect x="3" y="14" width="7" height="7" rx="1"></rect>
                         </svg>
-                        <span>Dashboard</span>
+                        <span th:text="#{nav.dashboard}">Dashboard</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">Gestión</div>
+                    <div class="nav-section-title" th:text="#{nav.gestion}">Management</div>
                     <a href="/productos" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                             <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                             <line x1="12" y1="22.08" x2="12" y2="12"></line>
                         </svg>
-                        <span>Productos</span>
+                        <span th:text="#{nav.productos}">Products</span>
                     </a>
                     <a href="/stock" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M3 3h18v18H3z M3 9h18 M9 21V9"></path>
                         </svg>
-                        <span>Stock</span>
+                        <span th:text="#{nav.stock}">Stock</span>
                     </a>
                     <a href="/vencimientos" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="10"></circle>
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
-                        <span>Vencimientos</span>
+                        <span th:text="#{nav.vencimientos}">Expirations</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">Movimientos</div>
+                    <div class="nav-section-title" th:text="#{nav.movimientos}">Movements</div>
                     <a href="/entradas" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <polyline points="19 12 12 19 5 12"></polyline>
                         </svg>
-                        <span>Entradas</span>
+                        <span th:text="#{nav.entradas}">Entries</span>
                     </a>
                     <a href="/salidas" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <line x1="12" y1="19" x2="12" y2="5"></line>
                             <polyline points="5 12 12 5 19 12"></polyline>
                         </svg>
-                        <span>Salidas</span>
+                        <span th:text="#{nav.salidas}">Exits</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">Sistema</div>
+                    <div class="nav-section-title" th:text="#{nav.sistema}">System</div>
                     <a href="/configuracion" class="nav-item">
                         <svg class="nav-item-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="3"></circle>
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                         </svg>
-                        <span>Configuración</span>
+                        <span th:text="#{nav.configuracion}">Settings</span>
                     </a>
                 </div>
             </nav>
@@ -99,7 +99,7 @@
                     <div class="sidebar-avatar">TC</div>
                     <div class="sidebar-profile-info">
                         <div class="sidebar-profile-name">Tobias Choclin</div>
-                        <div class="sidebar-profile-role">Administrador</div>
+                        <div class="sidebar-profile-role" th:text="#{profile.administrator}">Administrator</div>
                     </div>
                 </a>
             </div>
@@ -107,17 +107,22 @@
 
         <!-- Contenido Principal -->
         <main class="main-wrapper">
+            <!-- Language Selector -->
+            <div style="position: fixed; top: 20px; right: 20px; z-index: 100;">
+                <div th:replace="~{language-selector :: language-selector}"></div>
+            </div>
+
             <div class="main-content">
                 <div class="page-header">
                     <div class="page-header-top">
                         <div>
-                            <h1 class="page-title">Dashboard</h1>
-                            <p class="page-subtitle">Vista general del estado del inventario y alertas</p>
+                            <h1 class="page-title" th:text="#{dashboard.title}">Dashboard</h1>
+                            <p class="page-subtitle" th:text="#{dashboard.subtitle}">Overview of inventory status and alerts</p>
                         </div>
                     </div>
                 </div>
 
-                <div id="loading">Cargando...</div>
+                <div id="loading" th:text="#{dashboard.loading}">Loading...</div>
                 <div id="dashboard-content" style="display: none;">
                     <!-- KPIs Grid -->
                     <div class="metrics-grid" id="kpis-grid"></div>
@@ -131,7 +136,7 @@
                                     <circle cx="10" cy="10" r="8"></circle>
                                     <polyline points="10 6 10 10 13 13"></polyline>
                                 </svg>
-                                Productos Próximos a Vencer
+                                <span th:text="#{dashboard.expiring.title}">Products Expiring Soon</span>
                             </div>
                             <div id="proximos-vencer" style="margin-top: 16px;"></div>
                         </div>
@@ -144,7 +149,7 @@
                                     <line x1="12" y1="9" x2="12" y2="13"></line>
                                     <line x1="12" y1="17" x2="12.01" y2="17"></line>
                                 </svg>
-                                Productos con Stock Bajo
+                                <span th:text="#{dashboard.low.stock.title}">Products with Low Stock</span>
                             </div>
                             <div id="stock-bajo" style="margin-top: 16px;"></div>
                         </div>
@@ -154,7 +159,29 @@
         </main>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        // Mensajes i18n
+        const messages = {
+            kpi: {
+                total: [[#{dashboard.kpi.total}]],
+                totalDesc: [[#{dashboard.kpi.total.desc}]],
+                inStock: [[#{dashboard.kpi.in.stock}]],
+                inStockDesc: [[#{dashboard.kpi.in.stock.desc}]],
+                lowStock: [[#{dashboard.kpi.low.stock}]],
+                lowStockDesc: [[#{dashboard.kpi.low.stock.desc}]],
+                outOfStock: [[#{dashboard.kpi.out.of.stock}]],
+                outOfStockDesc: [[#{dashboard.kpi.out.of.stock.desc}]],
+                expiringSoon: [[#{dashboard.kpi.expiring.soon}]],
+                expiringSoonDesc: [[#{dashboard.kpi.expiring.soon.desc}]]
+            },
+            expiringEmpty: [[#{dashboard.expiring.empty}]],
+            lowStockEmpty: [[#{dashboard.low.stock.empty}]],
+            days: [[#{dashboard.days}]],
+            units: [[#{dashboard.units}]],
+            stock: [[#{dashboard.stock.current}]],
+            percentage: [[#{dashboard.percentage}]]
+        };
+
         // Iconos SVG
         const icons = {
             cube: (size, color) => `
@@ -207,11 +234,11 @@
                 const data = await response.json();
 
                 const kpis = [
-                    { title: 'Productos Totales', value: data.totalProductos, desc: 'Total de productos activos', color: '#4A7BA7', icon: icons.cube(24, '#4A7BA7'), link: '/productos' },
-                    { title: 'En Stock', value: data.enStock, desc: 'Con stock suficiente', color: '#5F9B8D', icon: icons.checkCircle(24, '#5F9B8D'), link: '/stock?estado=EN_STOCK' },
-                    { title: 'Stock Bajo', value: data.stockBajo, desc: 'Por debajo del mínimo', color: '#E89B4F', icon: icons.alertTriangle(24, '#E89B4F'), link: '/stock?estado=STOCK_BAJO' },
-                    { title: 'Sin Stock', value: data.sinStock, desc: 'Requieren reposición', color: '#D97066', icon: icons.xCircle(24, '#D97066'), link: '/stock?estado=SIN_STOCK' },
-                    { title: 'Próx. a Vencer', value: data.proxVencer, desc: 'Vencen en 30 días', color: '#E89B4F', icon: icons.clock(24, '#E89B4F'), link: '/vencimientos?dias=30&estado=VENCE_PRONTO' }
+                    { title: messages.kpi.total, value: data.totalProductos, desc: messages.kpi.totalDesc, color: '#4A7BA7', icon: icons.cube(24, '#4A7BA7'), link: '/productos' },
+                    { title: messages.kpi.inStock, value: data.enStock, desc: messages.kpi.inStockDesc, color: '#5F9B8D', icon: icons.checkCircle(24, '#5F9B8D'), link: '/stock?estado=EN_STOCK' },
+                    { title: messages.kpi.lowStock, value: data.stockBajo, desc: messages.kpi.lowStockDesc, color: '#E89B4F', icon: icons.alertTriangle(24, '#E89B4F'), link: '/stock?estado=STOCK_BAJO' },
+                    { title: messages.kpi.outOfStock, value: data.sinStock, desc: messages.kpi.outOfStockDesc, color: '#D97066', icon: icons.xCircle(24, '#D97066'), link: '/stock?estado=SIN_STOCK' },
+                    { title: messages.kpi.expiringSoon, value: data.proxVencer, desc: messages.kpi.expiringSoonDesc, color: '#E89B4F', icon: icons.clock(24, '#E89B4F'), link: '/vencimientos?dias=30&estado=VENCE_PRONTO' }
                 ];
 
                 const grid = document.getElementById('kpis-grid');
@@ -242,7 +269,7 @@
                     container.innerHTML = `
                         <div class="empty-state">
                             ${icons.checkCircle(16, '#5F9B8D')}
-                            No hay productos próximos a vencer
+                            ${messages.expiringEmpty}
                         </div>
                     `;
                     return;
@@ -253,7 +280,7 @@
                         <div class="alert-icon">${icons.clock(18, '#E89B4F')}</div>
                         <div class="alert-info">
                             <div class="nombre">${item.nombre}</div>
-                            <div class="detalle">${item.fechaFormateada} • ${item.diasRestantes} días • ${item.cantidad} unidades</div>
+                            <div class="detalle">${item.fechaFormateada} • ${item.diasRestantes} ${messages.days} • ${item.cantidad} ${messages.units}</div>
                         </div>
                     </div>
                 `).join('');
@@ -274,7 +301,7 @@
                     container.innerHTML = `
                         <div class="empty-state">
                             ${icons.checkCircle(16, '#5F9B8D')}
-                            Todos los productos tienen stock suficiente
+                            ${messages.lowStockEmpty}
                         </div>
                     `;
                     return;
@@ -285,7 +312,7 @@
                         <div class="alert-icon">${icons.alertTriangle(18, '#D97066')}</div>
                         <div class="alert-info">
                             <div class="nombre">${item.nombre}</div>
-                            <div class="detalle">Stock: ${item.cantidadActual} / ${item.stockMinimo} • ${item.porcentaje}% del mínimo</div>
+                            <div class="detalle">${messages.stock}: ${item.cantidadActual} / ${item.stockMinimo} • ${item.porcentaje}% ${messages.percentage}</div>
                         </div>
                     </div>
                 `).join('');

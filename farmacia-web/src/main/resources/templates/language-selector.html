@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Language Selector</title>
+</head>
+<body>
+    <!-- Componente de selección de idioma -->
+    <div th:fragment="language-selector" class="language-selector">
+        <button class="language-button" onclick="toggleLanguageMenu()" aria-label="Cambiar idioma">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span class="language-text" th:text="${#locale.language == 'en' ? 'EN' : 'ES'}">ES</span>
+            <svg class="language-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </button>
+
+        <div class="language-menu" id="languageMenu">
+            <a th:href="@{''(lang='es')}" class="language-option" th:classappend="${#locale.language == 'es' ? 'active' : ''}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="4" rx="1"></rect>
+                    <rect x="3" y="10" width="18" height="4" rx="1"></rect>
+                    <rect x="3" y="16" width="18" height="4" rx="1"></rect>
+                </svg>
+                <div>
+                    <div class="language-name">Español</div>
+                    <div class="language-code">ES</div>
+                </div>
+                <svg class="language-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </a>
+
+            <a th:href="@{''(lang='en')}" class="language-option" th:classappend="${#locale.language == 'en' ? 'active' : ''}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                    <path d="M8 3v14"></path>
+                    <path d="M2 8h6"></path>
+                    <path d="M2 13h6"></path>
+                    <path d="M8 3l13 14"></path>
+                    <path d="M8 17l13-14"></path>
+                </svg>
+                <div>
+                    <div class="language-name">English</div>
+                    <div class="language-code">EN</div>
+                </div>
+                <svg class="language-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <style>
+        .language-selector {
+            position: relative;
+            display: inline-block;
+        }
+
+        .language-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background-color: var(--surface, #FFFFFF);
+            border: 1px solid var(--border, #E5E7EB);
+            border-radius: 10px;
+            color: var(--text-primary, #1F2937);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 40px;
+        }
+
+        .language-button:hover {
+            background-color: var(--surface-hover, #F9FAFB);
+            border-color: var(--primary, #4A7BA7);
+        }
+
+        .language-text {
+            color: var(--text-secondary, #6B7280);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .language-chevron {
+            color: var(--text-tertiary, #9CA3AF);
+            transition: transform 0.2s;
+        }
+
+        .language-selector.open .language-chevron {
+            transform: rotate(180deg);
+        }
+
+        .language-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background-color: var(--surface, #FFFFFF);
+            border: 1px solid var(--border, #E5E7EB);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            padding: 8px;
+            display: none;
+            z-index: 1000;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .language-menu.show {
+            display: block;
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--text-primary, #1F2937);
+            text-decoration: none;
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .language-option:hover {
+            background-color: var(--surface-hover, #F3F4F6);
+        }
+
+        .language-option.active {
+            background-color: var(--primary-soft, #E8F1F7);
+        }
+
+        .language-option svg:first-child {
+            color: var(--text-secondary, #6B7280);
+            flex-shrink: 0;
+        }
+
+        .language-option.active svg:first-child {
+            color: var(--primary, #4A7BA7);
+        }
+
+        .language-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary, #1F2937);
+        }
+
+        .language-code {
+            font-size: 12px;
+            color: var(--text-secondary, #6B7280);
+        }
+
+        .language-check {
+            color: var(--primary, #4A7BA7);
+            margin-left: auto;
+            opacity: 0;
+        }
+
+        .language-option.active .language-check {
+            opacity: 1;
+        }
+    </style>
+
+    <script>
+        function toggleLanguageMenu() {
+            const menu = document.getElementById('languageMenu');
+            const selector = menu.closest('.language-selector');
+            menu.classList.toggle('show');
+            selector.classList.toggle('open');
+        }
+
+        // Cerrar el menú al hacer click fuera
+        document.addEventListener('click', function(event) {
+            const selector = event.target.closest('.language-selector');
+            if (!selector) {
+                const menus = document.querySelectorAll('.language-menu.show');
+                menus.forEach(menu => {
+                    menu.classList.remove('show');
+                    menu.closest('.language-selector').classList.remove('open');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

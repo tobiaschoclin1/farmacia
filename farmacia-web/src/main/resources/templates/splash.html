@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farmacia - Sistema de Gestión</title>
+    <title th:text="#{app.name} + ' - Management System'">Pharmacy - Management System</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     <style>
         * {
@@ -160,10 +160,10 @@
 <body>
     <div class="splash-container">
         <div class="logo-wrapper">
-            <img src="/img/logo.png" alt="Farmacia">
+            <img src="/img/logo.png" th:alt="#{app.name}">
         </div>
-        <h1>Farmacia</h1>
-        <p class="subtitle">Sistema de Gestión</p>
+        <h1 th:text="#{app.name}">Pharmacy</h1>
+        <p class="subtitle" th:text="#{#locale.language == 'en' ? 'Management System' : 'Sistema de Gestión'}">Management System</p>
         <div class="loading-dots">
             <div class="dot"></div>
             <div class="dot"></div>
@@ -171,7 +171,7 @@
         </div>
     </div>
 
-    <a href="/registro" class="skip-link">Saltar →</a>
+    <a href="/registro" class="skip-link" th:text="#{#locale.language == 'en' ? 'Skip →' : 'Saltar →'}">Skip →</a>
 
     <script>
         // Verificar si ya hay sesión activa
