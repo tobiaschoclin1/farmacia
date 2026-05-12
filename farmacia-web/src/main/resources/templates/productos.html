@@ -186,6 +186,11 @@
 
         <!-- Contenido Principal -->
         <main class="main-wrapper">
+            <!-- Language Selector -->
+            <div style="position: fixed; top: 20px; right: 20px; z-index: 100;">
+                <div th:replace="~{language-selector :: language-selector}"></div>
+            </div>
+
             <div class="main-content">
                 <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
                     <div>
