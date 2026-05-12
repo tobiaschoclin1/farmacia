@@ -101,14 +101,14 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 20px; z-index: 100;">
+            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
             <div class="main-content">
                 <div class="page-header">
-                    <h1 class="page-title">Configuración</h1>
-                    <p class="page-subtitle">Ajustes del sistema y preferencias de la farmacia</p>
+                    <h1 class="page-title" th:text="#{configuracion.title}">Settings</h1>
+                    <p class="page-subtitle" th:text="#{configuracion.subtitle}">System settings</p>
                 </div>
 
                 <div class="settings-grid">

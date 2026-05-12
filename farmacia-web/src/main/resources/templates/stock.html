@@ -101,19 +101,19 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 20px; z-index: 100;">
+            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
             <div class="main-content">
                 <div class="page-header">
-                    <h1 class="page-title">Stock Actual</h1>
-                    <p class="page-subtitle">Estado del inventario por producto y lote</p>
+                    <h1 class="page-title" th:text="#{stock.title}">Stock</h1>
+                    <p class="page-subtitle" th:text="#{stock.subtitle}">Inventory control and alerts</p>
                 </div>
 
             <div class="card">
                 <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-                    <input type="text" id="search" placeholder="Buscar por nombre o código de barras..." style="flex: 1; min-width: 200px;">
+                    <input type="text" id="search" th:placeholder="#{stock.search.placeholder}" style="flex: 1; min-width: 200px;">
                     <select id="filtroEstado" onchange="applyFilters()">
                         <option value="">Todos los estados</option>
                         <option value="EN_STOCK">En Stock</option>
@@ -125,10 +125,10 @@
                         <option value="stockActual">Ordenar por Stock</option>
                         <option value="estado">Ordenar por Estado</option>
                     </select>
-                    <button onclick="loadStock()">Buscar</button>
+                    <button onclick="loadStock()"><span th:text="#{common.search}">Search</span></button>
                 </div>
 
-                <div id="loading">Cargando stock...</div>
+                <div id="loading"><span th:text="#{stock.loading}">Loading stock...</span></div>
                 <div id="stock-table" style="display: none;">
                     <table>
                         <thead>

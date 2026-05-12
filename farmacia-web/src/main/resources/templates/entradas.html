@@ -101,18 +101,18 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 20px; z-index: 100;">
+            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
             <div class="main-content">
                 <div class="page-header">
-                    <h1 class="page-title">Entrada de Stock</h1>
-                    <p class="page-subtitle">Registrar ingreso de productos al inventario</p>
+                    <h1 class="page-title" th:text="#{entradas.title}">Entries</h1>
+                    <p class="page-subtitle" th:text="#{entradas.subtitle}">Incoming merchandise log</p>
                 </div>
 
             <div class="card">
-                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Nueva Entrada</h3>
+                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;" th:text="#{entradas.modal.new.title}">New Entry</h3>
 
                 <div style="margin-bottom: 20px;">
                     <label class="form-label" style="display: block; margin-bottom: 8px;">Usuario</label>

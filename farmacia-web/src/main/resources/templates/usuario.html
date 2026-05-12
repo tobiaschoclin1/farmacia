@@ -101,14 +101,14 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 20px; z-index: 100;">
+            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
             <div class="main-content">
                 <div class="page-header">
-                    <h1 class="page-title">Mi Perfil</h1>
-                    <p class="page-subtitle">Gestiona tu información personal y preferencias</p>
+                    <h1 class="page-title" th:text="#{#locale.language == 'en' ? 'My Profile' : 'Mi Perfil'}">My Profile</h1>
+                    <p class="page-subtitle" th:text="#{#locale.language == 'en' ? 'Manage your personal information and preferences' : 'Gestiona tu información personal y preferencias'}">Manage your personal information and preferences</p>
                 </div>
 
                 <!-- Cabecera del perfil -->

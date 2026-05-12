@@ -101,14 +101,14 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 20px; z-index: 100;">
+            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
             <div class="main-content">
                 <div class="page-header">
-                    <h1 class="page-title">Control de Vencimientos</h1>
-                    <p class="page-subtitle">Monitoreo de fechas de expiración de productos</p>
+                    <h1 class="page-title" th:text="#{vencimientos.title}">Expirations</h1>
+                    <p class="page-subtitle" th:text="#{vencimientos.subtitle}">Expiration date control</p>
                 </div>
 
             <!-- KPIs de vencimiento -->
@@ -186,7 +186,7 @@
                     <button onclick="loadVencimientos()" class="button">Actualizar</button>
                 </div>
 
-                <div id="loading">Cargando vencimientos...</div>
+                <div id="loading"><span th:text="#{vencimientos.loading}">Loading expirations...</span></div>
                 <div id="vencimientos-table" style="display: none;">
                     <table>
                         <thead>
