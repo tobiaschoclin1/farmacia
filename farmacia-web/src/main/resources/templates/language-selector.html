@@ -7,26 +7,22 @@
 <body>
     <!-- Componente de selección de idioma -->
     <div th:fragment="language-selector" class="language-selector">
-        <button class="language-button" onclick="toggleLanguageMenu()" aria-label="Cambiar idioma">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button class="language-button" onclick="toggleLanguageMenu(event)" aria-label="Change language">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="2" y1="12" x2="22" y2="12"></line>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
             <span class="language-text" th:text="${#locale.language == 'en' ? 'EN' : 'ES'}">ES</span>
-            <svg class="language-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg class="language-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
         </button>
 
         <div class="language-menu" id="languageMenu">
             <a th:href="@{''(lang='es')}" class="language-option" th:classappend="${#locale.language == 'es' ? 'active' : ''}">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="4" rx="1"></rect>
-                    <rect x="3" y="10" width="18" height="4" rx="1"></rect>
-                    <rect x="3" y="16" width="18" height="4" rx="1"></rect>
-                </svg>
-                <div>
+                <span class="flag-emoji">🇪🇸</span>
+                <div class="language-info">
                     <div class="language-name">Español</div>
                     <div class="language-code">ES</div>
                 </div>
@@ -36,15 +32,8 @@
             </a>
 
             <a th:href="@{''(lang='en')}" class="language-option" th:classappend="${#locale.language == 'en' ? 'active' : ''}">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="2" y="3" width="20" height="14" rx="2"></rect>
-                    <path d="M8 3v14"></path>
-                    <path d="M2 8h6"></path>
-                    <path d="M2 13h6"></path>
-                    <path d="M8 3l13 14"></path>
-                    <path d="M8 17l13-14"></path>
-                </svg>
-                <div>
+                <span class="flag-emoji">🇺🇸</span>
+                <div class="language-info">
                     <div class="language-name">English</div>
                     <div class="language-code">EN</div>
                 </div>
@@ -65,32 +54,36 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 14px;
-            background-color: var(--surface, #FFFFFF);
-            border: 1px solid var(--border, #E5E7EB);
-            border-radius: 10px;
-            color: var(--text-primary, #1F2937);
+            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(74, 123, 167, 0.2);
+            border-radius: 12px;
+            color: #2C2416;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-            height: 40px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .language-button:hover {
-            background-color: var(--surface-hover, #F9FAFB);
-            border-color: var(--primary, #4A7BA7);
+            background-color: rgba(255, 255, 255, 1);
+            border-color: #4A7BA7;
+            box-shadow: 0 4px 12px rgba(74, 123, 167, 0.15);
+            transform: translateY(-1px);
         }
 
         .language-text {
-            color: var(--text-secondary, #6B7280);
-            font-weight: 600;
+            color: #4A7BA7;
+            font-weight: 700;
             font-size: 13px;
+            letter-spacing: 0.5px;
         }
 
         .language-chevron {
-            color: var(--text-tertiary, #9CA3AF);
-            transition: transform 0.2s;
+            color: #6B7280;
+            transition: transform 0.2s ease;
         }
 
         .language-selector.open .language-chevron {
@@ -101,12 +94,13 @@
             position: absolute;
             top: calc(100% + 8px);
             right: 0;
-            background-color: var(--surface, #FFFFFF);
-            border: 1px solid var(--border, #E5E7EB);
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(74, 123, 167, 0.2);
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             min-width: 200px;
-            padding: 8px;
+            padding: 6px;
             display: none;
             z-index: 1000;
             animation: slideDown 0.2s ease-out;
@@ -133,55 +127,76 @@
             gap: 12px;
             padding: 10px 12px;
             border-radius: 8px;
-            color: var(--text-primary, #1F2937);
+            color: #2C2416;
             text-decoration: none;
-            transition: all 0.15s;
+            transition: all 0.15s ease;
             position: relative;
         }
 
         .language-option:hover {
-            background-color: var(--surface-hover, #F3F4F6);
+            background-color: rgba(74, 123, 167, 0.08);
         }
 
         .language-option.active {
-            background-color: var(--primary-soft, #E8F1F7);
+            background-color: rgba(74, 123, 167, 0.12);
         }
 
-        .language-option svg:first-child {
-            color: var(--text-secondary, #6B7280);
+        .flag-emoji {
+            font-size: 24px;
+            line-height: 1;
             flex-shrink: 0;
         }
 
-        .language-option.active svg:first-child {
-            color: var(--primary, #4A7BA7);
+        .language-info {
+            flex: 1;
         }
 
         .language-name {
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-primary, #1F2937);
+            color: #2C2416;
+            line-height: 1.3;
         }
 
         .language-code {
-            font-size: 12px;
-            color: var(--text-secondary, #6B7280);
+            font-size: 11px;
+            color: #6B7280;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
 
         .language-check {
-            color: var(--primary, #4A7BA7);
+            color: #4A7BA7;
             margin-left: auto;
             opacity: 0;
+            flex-shrink: 0;
         }
 
         .language-option.active .language-check {
             opacity: 1;
         }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .language-button {
+                padding: 6px 12px;
+                gap: 6px;
+            }
+
+            .language-menu {
+                right: 0;
+                min-width: 180px;
+            }
+        }
     </style>
 
     <script>
-        function toggleLanguageMenu() {
-            const menu = document.getElementById('languageMenu');
-            const selector = menu.closest('.language-selector');
+        function toggleLanguageMenu(event) {
+            event.stopPropagation();
+            const button = event.currentTarget;
+            const selector = button.closest('.language-selector');
+            const menu = selector.querySelector('.language-menu');
+
             menu.classList.toggle('show');
             selector.classList.toggle('open');
         }
@@ -191,10 +206,9 @@
             const selector = event.target.closest('.language-selector');
             if (!selector) {
                 const menus = document.querySelectorAll('.language-menu.show');
-                menus.forEach(menu => {
-                    menu.classList.remove('show');
-                    menu.closest('.language-selector').classList.remove('open');
-                });
+                const selectors = document.querySelectorAll('.language-selector.open');
+                menus.forEach(menu => menu.classList.remove('show'));
+                selectors.forEach(sel => sel.classList.remove('open'));
             }
         });
     </script>

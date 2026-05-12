@@ -158,12 +158,17 @@
     </style>
 </head>
 <body>
+    <!-- Language Selector -->
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 100;">
+        <div th:replace="~{language-selector :: language-selector}"></div>
+    </div>
+
     <div class="splash-container">
         <div class="logo-wrapper">
             <img src="/img/logo.png" th:alt="#{app.name}">
         </div>
         <h1 th:text="#{app.name}">Pharmacy</h1>
-        <p class="subtitle" th:text="#{#locale.language == 'en' ? 'Management System' : 'Sistema de Gestión'}">Management System</p>
+        <p class="subtitle" th:text="#{app.management.system}">Management System</p>
         <div class="loading-dots">
             <div class="dot"></div>
             <div class="dot"></div>
@@ -171,7 +176,7 @@
         </div>
     </div>
 
-    <a href="/registro" class="skip-link" th:text="#{#locale.language == 'en' ? 'Skip →' : 'Saltar →'}">Skip →</a>
+    <a href="/registro" class="skip-link" th:text="#{app.skip}">Skip →</a>
 
     <script>
         // Verificar si ya hay sesión activa
