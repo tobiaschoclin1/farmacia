@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -24,7 +25,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/registro", "/api/auth/**", "/css/**", "/js/**", "/img/**", "/favicon.png").permitAll()
+                .requestMatchers("/", "/login", "/registro", "/health", "/api/auth/**", "/css/**", "/js/**", "/img/**", "/favicon.png").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -37,6 +38,8 @@ public class SecurityConfig {
                 .successHandler(oAuth2LoginSuccessHandler)
             )
             .logout(logout -> logout
+                // session.js cierra sesión con GET /logout; Spring Security 6 solo acepta POST por defecto.
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
             )
