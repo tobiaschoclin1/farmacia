@@ -14,8 +14,8 @@ jobs:
         run: |
           echo "🔔 Pinging Render service at $(date)"
 
-          # Hacer request al dashboard para mantener despierto
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://farmacia-2xm1.onrender.com/api/dashboard/kpis)
+          # Endpoint público (no requiere login); el dashboard devolvía 302 a /login
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://farmacia-2xm1.onrender.com/health)
 
           if [ "$RESPONSE" -eq 200 ]; then
             echo "✅ Service is awake (HTTP $RESPONSE)"
