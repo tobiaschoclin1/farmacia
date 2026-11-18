@@ -101,7 +101,7 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
+            <div class="lang-bar">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
@@ -114,53 +114,53 @@
                 <div class="settings-grid">
                     <!-- Información General -->
                     <div class="settings-section">
-                        <h3 class="settings-section-title">Información de la Farmacia</h3>
+                        <h3 class="settings-section-title" th:text="#{config.section.pharmacy}">Pharmacy information</h3>
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Nombre de la Farmacia</h4>
-                                <p>Farmacia Principal</p>
+                                <h4 th:text="#{config.pharmacy.name}">Pharmacy name</h4>
+                                <p th:text="#{config.pharmacy.name.value}">Main Pharmacy</p>
                             </div>
-                            <button class="button secondary small" onclick="editarNombre()">Editar</button>
+                            <button class="button secondary small" onclick="editarNombre()" th:text="#{common.edit}">Edit</button>
                         </div>
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Dirección</h4>
-                                <p>Av. Principal 123, Ciudad, País</p>
+                                <h4 th:text="#{config.pharmacy.address}">Address</h4>
+                                <p th:text="#{config.pharmacy.address.value}">Main Ave. 123, City, Country</p>
                             </div>
-                            <button class="button secondary small" onclick="editarDireccion()">Editar</button>
+                            <button class="button secondary small" onclick="editarDireccion()" th:text="#{common.edit}">Edit</button>
                         </div>
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Teléfono de Contacto</h4>
+                                <h4 th:text="#{config.pharmacy.phone}">Contact phone</h4>
                                 <p>+54 9 11 1234-5678</p>
                             </div>
-                            <button class="button secondary small" onclick="editarTelefono()">Editar</button>
+                            <button class="button secondary small" onclick="editarTelefono()" th:text="#{common.edit}">Edit</button>
                         </div>
                     </div>
 
                     <!-- Alertas y Notificaciones -->
                     <div class="settings-section">
-                        <h3 class="settings-section-title">Alertas y Notificaciones</h3>
+                        <h3 class="settings-section-title" th:text="#{config.section.alerts}">Alerts and notifications</h3>
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Días de Alerta de Vencimiento</h4>
-                                <p>Alertar productos que vencen en los próximos días</p>
+                                <h4 th:text="#{config.expiry.days}">Expiry alert days</h4>
+                                <p th:text="#{config.expiry.days.desc}">Alert on products expiring within this many days</p>
                             </div>
                             <div style="display: flex; align-items: center; gap: 12px;">
                                 <input type="number" id="diasVencimiento" value="30" min="1" max="365"
                                        style="width: 80px; text-align: center;">
-                                <span style="color: var(--text-secondary);">días</span>
+                                <span style="color: var(--text-secondary);" th:text="#{common.days}">days</span>
                             </div>
                         </div>
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Notificaciones de Stock Bajo</h4>
-                                <p>Recibir alertas cuando un producto esté por debajo del stock mínimo</p>
+                                <h4 th:text="#{config.notif.low.stock}">Low stock notifications</h4>
+                                <p th:text="#{config.notif.low.stock.desc}">Receive alerts when a product falls below its minimum stock</p>
                             </div>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="notifStockBajo" checked>
@@ -170,8 +170,8 @@
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Notificaciones por Email</h4>
-                                <p>Enviar resumen diario por correo electrónico</p>
+                                <h4 th:text="#{config.notif.email}">Email notifications</h4>
+                                <p th:text="#{config.notif.email.desc}">Send a daily summary by email</p>
                             </div>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="notifEmail">
@@ -182,24 +182,24 @@
 
                     <!-- Stock y Productos -->
                     <div class="settings-section">
-                        <h3 class="settings-section-title">Gestión de Stock</h3>
+                        <h3 class="settings-section-title" th:text="#{config.section.stock}">Stock management</h3>
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Stock Mínimo por Defecto</h4>
-                                <p>Cantidad mínima predeterminada para nuevos productos</p>
+                                <h4 th:text="#{config.stock.min.default}">Default minimum stock</h4>
+                                <p th:text="#{config.stock.min.default.desc}">Default minimum quantity for new products</p>
                             </div>
                             <div style="display: flex; align-items: center; gap: 12px;">
                                 <input type="number" id="stockMinimo" value="10" min="0"
                                        style="width: 80px; text-align: center;">
-                                <span style="color: var(--text-secondary);">unidades</span>
+                                <span style="color: var(--text-secondary);" th:text="#{config.units}">units</span>
                             </div>
                         </div>
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Permitir Stock Negativo</h4>
-                                <p>Permitir registrar salidas aunque no haya stock suficiente</p>
+                                <h4 th:text="#{config.stock.negative}">Allow negative stock</h4>
+                                <p th:text="#{config.stock.negative.desc}">Allow exits even when there is not enough stock</p>
                             </div>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="stockNegativo">
@@ -209,8 +209,8 @@
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Auto-descuento por Vencimiento</h4>
-                                <p>Descontar automáticamente productos vencidos del stock</p>
+                                <h4 th:text="#{config.auto.expiry}">Auto-remove expired stock</h4>
+                                <p th:text="#{config.auto.expiry.desc}">Automatically deduct expired products from stock</p>
                             </div>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="autoDescuento" checked>
@@ -221,38 +221,38 @@
 
                     <!-- Sistema -->
                     <div class="settings-section">
-                        <h3 class="settings-section-title">Sistema</h3>
+                        <h3 class="settings-section-title" th:text="#{config.section.system}">System</h3>
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Base de Datos</h4>
+                                <h4 th:text="#{config.db}">Database</h4>
                                 <p>PostgreSQL - farmacia_db</p>
                             </div>
-                            <span class="badge success">Conectada</span>
+                            <span class="badge success" th:text="#{config.db.connected}">Connected</span>
                         </div>
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Versión del Sistema</h4>
+                                <h4 th:text="#{config.version}">System version</h4>
                                 <p>v2.0.0</p>
                             </div>
-                            <button class="button secondary small">Ver Novedades</button>
+                            <button class="button secondary small" th:text="#{config.version.news}">View changelog</button>
                         </div>
 
                         <div class="settings-item">
                             <div class="settings-item-info">
-                                <h4>Exportar Datos</h4>
-                                <p>Descargar backup completo de la base de datos</p>
+                                <h4 th:text="#{config.export}">Export data</h4>
+                                <p th:text="#{config.export.desc}">Download a full database backup</p>
                             </div>
-                            <button class="button secondary small" onclick="exportarDatos()">Exportar</button>
+                            <button class="button secondary small" onclick="exportarDatos()" th:text="#{config.export.button}">Export</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Botones de acción -->
                 <div style="margin-top: 32px; display: flex; gap: 12px; justify-content: flex-end;">
-                    <button class="button ghost" onclick="resetConfig()">Restablecer</button>
-                    <button class="button" onclick="guardarConfiguracion()">Guardar Cambios</button>
+                    <button class="button ghost" onclick="resetConfig()" th:text="#{config.button.reset}">Reset</button>
+                    <button class="button" onclick="guardarConfiguracion()" th:text="#{config.button.save}">Save changes</button>
                 </div>
             </div>
         </main>
@@ -306,33 +306,48 @@
         }
     </style>
 
-    <script>
+    <script th:inline="javascript">
+        const MSG = {
+            promptName: /*[[#{config.prompt.name}]]*/ 'Enter the pharmacy name:',
+            pharmacyName: /*[[#{config.pharmacy.name.value}]]*/ 'Main Pharmacy',
+            promptAddress: /*[[#{config.prompt.address}]]*/ 'Enter the address:',
+            addressValue: /*[[#{config.pharmacy.address.value}]]*/ 'Main Ave. 123, City, Country',
+            promptPhone: /*[[#{config.prompt.phone}]]*/ 'Enter the phone number:',
+            phoneValue: /*[[#{config.phone.value}]]*/ '+54 9 11 1234-5678',
+            nameUpdated: /*[[#{config.updated.name}]]*/ 'Name updated',
+            addressUpdated: /*[[#{config.updated.address}]]*/ 'Address updated',
+            phoneUpdated: /*[[#{config.updated.phone}]]*/ 'Phone updated',
+            exportStarted: /*[[#{config.export.started}]]*/ 'Starting data export...',
+            saved: /*[[#{config.saved}]]*/ 'Settings saved successfully',
+            confirmReset: /*[[#{config.confirm.reset}]]*/ 'Are you sure you want to reset the settings to their defaults?',
+            resetDone: /*[[#{config.reset.done}]]*/ 'Settings reset'
+        };
         function editarNombre() {
-            const nombre = prompt('Ingrese el nombre de la farmacia:', 'Farmacia Principal');
+            const nombre = prompt(MSG.promptName, MSG.pharmacyName);
             if (nombre) {
                 console.log('Nuevo nombre:', nombre);
-                alert('Nombre actualizado');
+                alert(MSG.nameUpdated);
             }
         }
 
         function editarDireccion() {
-            const direccion = prompt('Ingrese la dirección:', 'Av. Principal 123, Ciudad, País');
+            const direccion = prompt(MSG.promptAddress, MSG.addressValue);
             if (direccion) {
                 console.log('Nueva dirección:', direccion);
-                alert('Dirección actualizada');
+                alert(MSG.addressUpdated);
             }
         }
 
         function editarTelefono() {
-            const telefono = prompt('Ingrese el teléfono:', '+54 9 11 1234-5678');
+            const telefono = prompt(MSG.promptPhone, MSG.phoneValue);
             if (telefono) {
                 console.log('Nuevo teléfono:', telefono);
-                alert('Teléfono actualizado');
+                alert(MSG.phoneUpdated);
             }
         }
 
         function exportarDatos() {
-            alert('Iniciando exportación de datos...');
+            alert(MSG.exportStarted);
             console.log('Exportando datos');
         }
 
@@ -347,18 +362,18 @@
             };
 
             console.log('Guardando configuración:', config);
-            alert('Configuración guardada correctamente');
+            alert(MSG.saved);
         }
 
         function resetConfig() {
-            if (confirm('¿Está seguro de restablecer la configuración a valores predeterminados?')) {
+            if (confirm(MSG.confirmReset)) {
                 document.getElementById('diasVencimiento').value = 30;
                 document.getElementById('notifStockBajo').checked = true;
                 document.getElementById('notifEmail').checked = false;
                 document.getElementById('stockMinimo').value = 10;
                 document.getElementById('stockNegativo').checked = false;
                 document.getElementById('autoDescuento').checked = true;
-                alert('Configuración restablecida');
+                alert(MSG.resetDone);
             }
         }
     </script>

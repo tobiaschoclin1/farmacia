@@ -101,7 +101,7 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
+            <div class="lang-bar">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
@@ -121,9 +121,9 @@
                             <line x1="12" y1="16" x2="12.01" y2="16"></line>
                         </svg>
                     </div>
-                    <div class="metric-label">Vencidos</div>
+                    <div class="metric-label" th:text="#{vencimientos.kpi.expired}">Expired</div>
                     <div class="metric-value" style="color: #D97066;" id="stat-vencidos">0</div>
-                    <div class="metric-change">Requieren retiro</div>
+                    <div class="metric-change" th:text="#{vencimientos.kpi.expired.desc}">Require removal</div>
                 </div>
 
                 <div class="metric-card">
@@ -133,9 +133,9 @@
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
                     </div>
-                    <div class="metric-label">Vencen en 7 días</div>
+                    <div class="metric-label" th:text="#{vencimientos.kpi.7days}">Expire in 7 days</div>
                     <div class="metric-value" style="color: #E89B4F;" id="stat-7dias">0</div>
-                    <div class="metric-change">Urgente</div>
+                    <div class="metric-change" th:text="#{vencimientos.kpi.7days.desc}">Urgent</div>
                 </div>
 
                 <div class="metric-card">
@@ -145,45 +145,45 @@
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
                     </div>
-                    <div class="metric-label">Vencen en 30 días</div>
+                    <div class="metric-label" th:text="#{vencimientos.kpi.30days}">Expire in 30 days</div>
                     <div class="metric-value" style="color: #E89B4F;" id="stat-30dias">0</div>
-                    <div class="metric-change">Requieren atención</div>
+                    <div class="metric-change" th:text="#{vencimientos.kpi.30days.desc}">Need attention</div>
                 </div>
             </div>
 
             <div class="card">
                 <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: end; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 150px;">
-                        <label class="form-label" style="display: block; margin-bottom: 8px;">Mostrar vencimientos de los próximos</label>
+                        <label class="form-label" style="display: block; margin-bottom: 8px;" th:text="#{vencimientos.range.label}">Show expirations within</label>
                         <select id="filter-dias" onchange="loadVencimientos()">
-                            <option value="7">7 días</option>
-                            <option value="15">15 días</option>
-                            <option value="30" selected>30 días</option>
-                            <option value="60">60 días</option>
-                            <option value="90">90 días</option>
-                            <option value="180">6 meses</option>
-                            <option value="365">1 año</option>
+                            <option value="7" th:text="#{vencimientos.range.7}">7 days</option>
+                            <option value="15" th:text="#{vencimientos.range.15}">15 days</option>
+                            <option value="30" selected th:text="#{vencimientos.days.30}">30 days</option>
+                            <option value="60" th:text="#{vencimientos.days.60}">60 days</option>
+                            <option value="90" th:text="#{vencimientos.days.90}">90 days</option>
+                            <option value="180" th:text="#{vencimientos.range.180}">6 months</option>
+                            <option value="365" th:text="#{vencimientos.range.365}">1 year</option>
                         </select>
                     </div>
                     <div style="flex: 1; min-width: 150px;">
-                        <label class="form-label" style="display: block; margin-bottom: 8px;">Filtrar por estado</label>
+                        <label class="form-label" style="display: block; margin-bottom: 8px;" th:text="#{vencimientos.state.label}">Filter by status</label>
                         <select id="filtroEstado" onchange="applyFilters()">
-                            <option value="">Todos</option>
-                            <option value="VENCIDO">Vencidos</option>
-                            <option value="VENCE_MUY_PRONTO">Vencen en 7 días</option>
-                            <option value="VENCE_PRONTO">Vencen en 30 días</option>
-                            <option value="VENCE_FUTURO">Futuros</option>
+                            <option value="" th:text="#{vencimientos.filter.all}">All</option>
+                            <option value="VENCIDO" th:text="#{vencimientos.filter.expired}">Expired</option>
+                            <option value="VENCE_MUY_PRONTO" th:text="#{vencimientos.filter.7days}">Expire in 7 days</option>
+                            <option value="VENCE_PRONTO" th:text="#{vencimientos.filter.30days}">Expire in 30 days</option>
+                            <option value="VENCE_FUTURO" th:text="#{vencimientos.filter.future}">Future</option>
                         </select>
                     </div>
                     <div style="flex: 1; min-width: 150px;">
-                        <label class="form-label" style="display: block; margin-bottom: 8px;">Ordenar por</label>
+                        <label class="form-label" style="display: block; margin-bottom: 8px;" th:text="#{vencimientos.sort.label}">Sort by</label>
                         <select id="ordenamiento" onchange="applyFilters()">
-                            <option value="fecha">Fecha de vencimiento</option>
-                            <option value="nombre">Nombre de producto</option>
-                            <option value="cantidad">Cantidad</option>
+                            <option value="fecha" th:text="#{vencimientos.sort.date}">Expiry date</option>
+                            <option value="nombre" th:text="#{vencimientos.sort.name}">Product name</option>
+                            <option value="cantidad" th:text="#{common.quantity}">Quantity</option>
                         </select>
                     </div>
-                    <button onclick="loadVencimientos()" class="button">Actualizar</button>
+                    <button onclick="loadVencimientos()" class="button" th:text="#{vencimientos.button.refresh}">Refresh</button>
                 </div>
 
                 <div id="loading"><span th:text="#{vencimientos.loading}">Loading expirations...</span></div>
@@ -191,13 +191,13 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Producto</th>
-                                <th>Código</th>
-                                <th>Lote</th>
-                                <th>Fecha Vencimiento</th>
-                                <th>Días Restantes</th>
-                                <th>Cantidad</th>
-                                <th>Estado</th>
+                                <th th:text="#{vencimientos.table.product}">Product</th>
+                                <th th:text="#{common.code}">Code</th>
+                                <th th:text="#{vencimientos.table.batch}">Batch</th>
+                                <th th:text="#{vencimientos.table.expiry.date}">Expiry Date</th>
+                                <th th:text="#{vencimientos.table.days.left}">Days Remaining</th>
+                                <th th:text="#{common.quantity}">Quantity</th>
+                                <th th:text="#{vencimientos.table.status}">Status</th>
                             </tr>
                         </thead>
                         <tbody id="vencimientos-body"></tbody>
@@ -207,7 +207,19 @@
         </main>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const MSG = {
+            errStats: /*[[#{vencimientos.error.stats}]]*/ 'Error loading statistics',
+            errLoad: /*[[#{vencimientos.error.load}]]*/ 'Error loading expirations',
+            empty: /*[[#{vencimientos.empty.filtered}]]*/ 'No products expiring with the selected filters',
+            badgeExpired: /*[[#{vencimientos.status.expired}]]*/ 'Expired',
+            badgeUrgent: /*[[#{vencimientos.badge.urgent}]]*/ 'Urgent',
+            badgeSoon: /*[[#{vencimientos.badge.soon}]]*/ 'Soon',
+            badgeFuture: /*[[#{vencimientos.badge.future}]]*/ 'Future',
+            overdue: /*[[#{vencimientos.days.overdue}]]*/ 'Expired {0} days ago',
+            daysUnit: /*[[#{vencimientos.days.unit}]]*/ 'days'
+        };
+
         let vencimientosData = [];
 
         async function loadStats() {
@@ -219,7 +231,7 @@
                 document.getElementById('stat-7dias').textContent = stats.vencen7dias;
                 document.getElementById('stat-30dias').textContent = stats.vencen30dias;
             } catch (error) {
-                console.error('Error cargando estadísticas:', error);
+                console.error('Error loading statistics:', error);
             }
         }
 
@@ -233,8 +245,8 @@
                 applyFilters();
                 loadStats();
             } catch (error) {
-                console.error('Error cargando vencimientos:', error);
-                document.getElementById('loading').textContent = 'Error al cargar vencimientos';
+                console.error('Error loading expirations:', error);
+                document.getElementById('loading').textContent = MSG.errLoad;
             }
         }
 
@@ -267,17 +279,17 @@
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                            No hay productos próximos a vencer con los filtros seleccionados
+                            ${MSG.empty}
                         </td>
                     </tr>
                 `;
             } else {
                 tbody.innerHTML = vencimientos.map(item => {
                     const estadoBadge = {
-                        'VENCIDO': '<span class="badge danger">Vencido</span>',
-                        'VENCE_MUY_PRONTO': '<span class="badge danger">Urgente</span>',
-                        'VENCE_PRONTO': '<span class="badge warning">Próximo</span>',
-                        'VENCE_FUTURO': '<span class="badge info">Futuro</span>'
+                        'VENCIDO': `<span class="badge danger">${MSG.badgeExpired}</span>`,
+                        'VENCE_MUY_PRONTO': `<span class="badge danger">${MSG.badgeUrgent}</span>`,
+                        'VENCE_PRONTO': `<span class="badge warning">${MSG.badgeSoon}</span>`,
+                        'VENCE_FUTURO': `<span class="badge info">${MSG.badgeFuture}</span>`
                     }[item.estado];
 
                     const rowClass = {
@@ -288,8 +300,8 @@
                     }[item.estado];
 
                     const diasText = item.diasRestantes < 0
-                        ? `<strong style="color: var(--danger);">Vencido hace ${Math.abs(item.diasRestantes)} días</strong>`
-                        : `<strong>${item.diasRestantes} días</strong>`;
+                        ? `<strong style="color: var(--danger);">${MSG.overdue.replace('{0}', Math.abs(item.diasRestantes))}</strong>`
+                        : `<strong>${item.diasRestantes} ${MSG.daysUnit}</strong>`;
 
                     return `
                         <tr class="${rowClass}">

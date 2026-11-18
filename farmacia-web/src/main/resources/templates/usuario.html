@@ -101,7 +101,7 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
+            <div class="lang-bar">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
@@ -115,43 +115,43 @@
                 <div class="profile-header">
                     <div class="profile-avatar-large" id="profileAvatarLarge">TC</div>
                     <div class="profile-info">
-                        <h2 id="profileName">Usuario</h2>
-                        <p id="profileRole">Cargando...</p>
+                        <h2 id="profileName" th:text="#{profile.user}">User</h2>
+                        <p id="profileRole" th:text="#{common.loading}">Loading...</p>
                     </div>
                 </div>
 
                 <!-- Formulario de información personal -->
                 <div class="card" style="margin-bottom: 20px;">
                     <div class="card-header">
-                        <h3 class="card-title">Información Personal</h3>
+                        <h3 class="card-title" th:text="#{usuario.section.personal}">Personal information</h3>
                     </div>
 
                     <form id="profileForm" onsubmit="saveProfile(event)">
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                             <div class="form-group">
-                                <label class="form-label">Nombre Completo</label>
+                                <label class="form-label" th:text="#{usuario.form.fullname}">Full name</label>
                                 <input type="text" class="form-input" id="nombre" value="" required>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Correo Electrónico</label>
+                                <label class="form-label" th:text="#{usuario.form.email}">Email address</label>
                                 <input type="email" class="form-input" id="email" value="" required>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Teléfono</label>
-                                <input type="text" class="form-input" id="telefono" value="" placeholder="Opcional">
+                                <label class="form-label" th:text="#{usuario.form.phone}">Phone</label>
+                                <input type="text" class="form-input" id="telefono" value="" th:placeholder="#{common.optional}">
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Rol</label>
+                                <label class="form-label" th:text="#{usuario.form.role}">Role</label>
                                 <input type="text" class="form-input" id="rol" value="" disabled>
                             </div>
                         </div>
 
                         <div style="margin-top: 24px; display: flex; gap: 12px;">
-                            <button type="submit" class="button">Guardar Cambios</button>
-                            <button type="button" class="button ghost" onclick="resetForm()">Cancelar</button>
+                            <button type="submit" class="button" th:text="#{config.button.save}">Save changes</button>
+                            <button type="button" class="button ghost" onclick="resetForm()" th:text="#{common.cancel}">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -159,31 +159,31 @@
                 <!-- Cambiar contraseña -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Cambiar Contraseña</h3>
+                        <h3 class="card-title" th:text="#{usuario.section.password}">Change password</h3>
                     </div>
 
                     <form id="passwordForm" onsubmit="changePassword(event)">
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                             <div class="form-group">
-                                <label class="form-label">Contraseña Actual</label>
+                                <label class="form-label" th:text="#{usuario.form.current.password}">Current password</label>
                                 <input type="password" class="form-input" id="currentPassword" required>
                             </div>
 
                             <div></div>
 
                             <div class="form-group">
-                                <label class="form-label">Nueva Contraseña</label>
+                                <label class="form-label" th:text="#{usuario.form.new.password}">New password</label>
                                 <input type="password" class="form-input" id="newPassword" required minlength="8">
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Confirmar Nueva Contraseña</label>
+                                <label class="form-label" th:text="#{usuario.form.confirm.password}">Confirm new password</label>
                                 <input type="password" class="form-input" id="confirmPassword" required minlength="8">
                             </div>
                         </div>
 
                         <div style="margin-top: 24px;">
-                            <button type="submit" class="button warning">Cambiar Contraseña</button>
+                            <button type="submit" class="button warning" th:text="#{usuario.button.change.password}">Change password</button>
                         </div>
                     </form>
                 </div>
@@ -192,7 +192,13 @@
     </div>
 
     <script src="/js/session.js"></script>
-    <script>
+    <script th:inline="javascript">
+        const MSG = {
+            user: /*[[#{profile.user}]]*/ 'User',
+            profileSaved: /*[[#{usuario.alert.profile.saved}]]*/ 'Profile updated successfully',
+            passwordMismatch: /*[[#{usuario.alert.password.mismatch}]]*/ 'Passwords do not match',
+            passwordChanged: /*[[#{usuario.alert.password.changed}]]*/ 'Password changed successfully'
+        };
         // Cargar datos del usuario desde la sesión
         function loadUserProfile() {
             const user = getCurrentUser();
@@ -204,8 +210,8 @@
                 : 'U';
 
             document.getElementById('profileAvatarLarge').textContent = iniciales;
-            document.getElementById('profileName').textContent = user.nombre || 'Usuario';
-            document.getElementById('profileRole').textContent = user.rol || 'Usuario';
+            document.getElementById('profileName').textContent = user.nombre || MSG.user;
+            document.getElementById('profileRole').textContent = user.rol || MSG.user;
 
             // Llenar formulario
             document.getElementById('nombre').value = user.nombre || '';
@@ -231,7 +237,7 @@
             sessionStorage.setItem('user', JSON.stringify(user));
 
             console.log('Guardando perfil:', formData);
-            alert('Perfil actualizado correctamente');
+            alert(MSG.profileSaved);
 
             // Recargar datos
             loadUserProfile();
@@ -244,12 +250,12 @@
             const confirmPassword = document.getElementById('confirmPassword').value;
 
             if (newPassword !== confirmPassword) {
-                alert('Las contraseñas no coinciden');
+                alert(MSG.passwordMismatch);
                 return;
             }
 
             console.log('Cambiando contraseña');
-            alert('Contraseña cambiada correctamente');
+            alert(MSG.passwordChanged);
             document.getElementById('passwordForm').reset();
         }
 

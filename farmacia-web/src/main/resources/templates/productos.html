@@ -187,7 +187,7 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
+            <div class="lang-bar">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
@@ -255,17 +255,17 @@
                     <div class="form-group">
                         <label class="form-label"><span th:text="#{common.base.unit}">Base Unit</span> *</label>
                         <select id="unidadBase" name="unidadBase" required>
-                            <option value="TABLETA">Tableta</option>
-                            <option value="CAPSULA">Cápsula</option>
-                            <option value="ML">Mililitros (ML)</option>
-                            <option value="GR">Gramos (GR)</option>
-                            <option value="UNI">Unidad</option>
+                            <option value="TABLETA" th:text="#{productos.unit.tablet}">Tablet</option>
+                            <option value="CAPSULA" th:text="#{productos.unit.capsule}">Capsule</option>
+                            <option value="ML" th:text="#{productos.unit.ml}">Milliliters (ML)</option>
+                            <option value="GR" th:text="#{productos.unit.gr}">Grams (GR)</option>
+                            <option value="UNI" th:text="#{productos.unit.uni}">Unit</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" th:text="#{common.units.per.box}">Units/Box</label>
-                        <input type="number" id="unidadesPorCaja" name="unidadesPorCaja" placeholder="Ej: 30" min="1">
+                        <input type="number" id="unidadesPorCaja" name="unidadesPorCaja" th:placeholder="#{productos.form.units.placeholder}" min="1">
                     </div>
 
                     <div class="form-group">
@@ -282,7 +282,18 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const MSG = {
+            saveLabel: /*[[#{productos.button.save}]]*/ 'Save',
+            creating: /*[[#{productos.button.creating}]]*/ 'Creating...',
+            created: /*[[#{productos.created}]]*/ 'Product created successfully',
+            errCreate: /*[[#{productos.error.create}]]*/ 'Error creating product',
+            errConn: /*[[#{productos.error.connection}]]*/ 'Connection error',
+            errLoad: /*[[#{productos.error.load}]]*/ 'Error loading products',
+            active: /*[[#{common.active}]]*/ 'Active',
+            inactive: /*[[#{common.inactive}]]*/ 'Inactive'
+        };
+
         function openModal() {
             document.getElementById('productoModal').style.display = 'block';
             document.getElementById('nombre').focus();
@@ -306,7 +317,7 @@
 
             const submitButton = document.getElementById('submitButton');
             submitButton.disabled = true;
-            submitButton.textContent = 'Creando...';
+            submitButton.textContent = MSG.creating;
 
             const formData = {
                 nombre: document.getElementById('nombre').value,
@@ -329,16 +340,16 @@
                 if (response.ok) {
                     closeModal();
                     loadProductos(); // Recargar lista
-                    alert('Producto creado exitosamente');
+                    alert(MSG.created);
                 } else {
-                    alert('Error al crear producto');
+                    alert(MSG.errCreate);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error de conexión');
+                alert(MSG.errConn);
             } finally {
                 submitButton.disabled = false;
-                submitButton.textContent = 'Crear Producto';
+                submitButton.textContent = MSG.saveLabel;
             }
         }
 
@@ -360,8 +371,8 @@
                         <td>${p.stockMinimo}</td>
                         <td>
                             ${p.activo
-                                ? '<span class="badge success">Activo</span>'
-                                : '<span class="badge neutral">Inactivo</span>'}
+                                ? `<span class="badge success">${MSG.active}</span>`
+                                : `<span class="badge neutral">${MSG.inactive}</span>`}
                         </td>
                     </tr>
                 `).join('');
@@ -369,8 +380,8 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('productos-table').style.display = 'block';
             } catch (error) {
-                console.error('Error cargando productos:', error);
-                document.getElementById('loading').textContent = 'Error al cargar productos';
+                console.error('Error loading products:', error);
+                document.getElementById('loading').textContent = MSG.errLoad;
             }
         }
 
