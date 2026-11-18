@@ -101,7 +101,7 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
+            <div class="lang-bar">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
@@ -115,15 +115,15 @@
                 <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
                     <input type="text" id="search" th:placeholder="#{stock.search.placeholder}" style="flex: 1; min-width: 200px;">
                     <select id="filtroEstado" onchange="applyFilters()">
-                        <option value="">Todos los estados</option>
-                        <option value="EN_STOCK">En Stock</option>
-                        <option value="STOCK_BAJO">Stock Bajo</option>
-                        <option value="SIN_STOCK">Sin Stock</option>
+                        <option value="" th:text="#{stock.filter.all}">All</option>
+                        <option value="EN_STOCK" th:text="#{stock.filter.in.stock}">In Stock</option>
+                        <option value="STOCK_BAJO" th:text="#{stock.filter.low.stock}">Low Stock</option>
+                        <option value="SIN_STOCK" th:text="#{stock.filter.out.of.stock}">Out of Stock</option>
                     </select>
                     <select id="ordenamiento" onchange="applyFilters()">
-                        <option value="nombre">Ordenar por Nombre</option>
-                        <option value="stockActual">Ordenar por Stock</option>
-                        <option value="estado">Ordenar por Estado</option>
+                        <option value="nombre" th:text="#{stock.sort.name}">Sort by name</option>
+                        <option value="stockActual" th:text="#{stock.sort.stock}">Sort by stock</option>
+                        <option value="estado" th:text="#{stock.sort.status}">Sort by status</option>
                     </select>
                     <button onclick="loadStock()"><span th:text="#{common.search}">Search</span></button>
                 </div>
@@ -133,13 +133,13 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Producto</th>
-                                <th>Código</th>
-                                <th>Unidad</th>
-                                <th>Stock Actual</th>
-                                <th>Stock Mínimo</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
+                                <th th:text="#{stock.table.product}">Product</th>
+                                <th th:text="#{common.code}">Code</th>
+                                <th th:text="#{stock.table.unit}">Unit</th>
+                                <th th:text="#{stock.table.current.stock}">Current Stock</th>
+                                <th th:text="#{stock.table.min.stock}">Minimum Stock</th>
+                                <th th:text="#{stock.table.status}">Status</th>
+                                <th th:text="#{stock.table.actions}">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="stock-body"></tbody>
@@ -151,7 +151,7 @@
             <div id="lotesModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
                 <div class="card" style="max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h2 style="font-size: 20px; font-weight: 600; margin: 0;">Lotes del Producto</h2>
+                        <h2 style="font-size: 20px; font-weight: 600; margin: 0;" th:text="#{stock.lots.title}">Product Lots</h2>
                         <button onclick="cerrarModal()" class="button ghost" style="padding: 8px;">✕</button>
                     </div>
                     <div id="lotes-content"></div>
@@ -160,7 +160,18 @@
         </main>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const MSG = {
+            statusIn: /*[[#{stock.status.in.stock}]]*/ 'In Stock',
+            statusLow: /*[[#{stock.status.low.stock}]]*/ 'Low Stock',
+            statusOut: /*[[#{stock.status.out.of.stock}]]*/ 'Out of Stock',
+            viewLots: /*[[#{stock.button.view.lots}]]*/ 'View Lots',
+            noLots: /*[[#{stock.lots.empty}]]*/ 'No lots with stock for this product',
+            noExpiry: /*[[#{stock.lots.no.expiry}]]*/ 'No expiry date',
+            errLoad: /*[[#{stock.error.load}]]*/ 'Error loading stock',
+            errLots: /*[[#{stock.error.lots}]]*/ 'Error loading product lots'
+        };
+
         let stockData = [];
 
         async function loadStock() {
@@ -172,8 +183,8 @@
                 stockData = await response.json();
                 applyFilters();
             } catch (error) {
-                console.error('Error cargando stock:', error);
-                document.getElementById('loading').textContent = 'Error al cargar stock';
+                console.error('Error loading stock:', error);
+                document.getElementById('loading').textContent = MSG.errLoad;
             }
         }
 
@@ -204,9 +215,9 @@
             const tbody = document.getElementById('stock-body');
             tbody.innerHTML = stock.map(item => {
                 const estadoBadge = {
-                    'EN_STOCK': '<span class="badge success">En Stock</span>',
-                    'STOCK_BAJO': '<span class="badge warning">Stock Bajo</span>',
-                    'SIN_STOCK': '<span class="badge danger">Sin Stock</span>'
+                    'EN_STOCK': `<span class="badge success">${MSG.statusIn}</span>`,
+                    'STOCK_BAJO': `<span class="badge warning">${MSG.statusLow}</span>`,
+                    'SIN_STOCK': `<span class="badge danger">${MSG.statusOut}</span>`
                 }[item.estado];
 
                 const rowClass = {
@@ -225,7 +236,7 @@
                         <td>${estadoBadge}</td>
                         <td>
                             <button onclick="verLotes(${item.id}, '${item.nombre}')" class="button small">
-                                Ver Lotes
+                                ${MSG.viewLots}
                             </button>
                         </td>
                     </tr>
@@ -246,7 +257,7 @@
                 if (lotes.length === 0) {
                     content.innerHTML = `
                         <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                            No hay lotes con stock para este producto
+                            ${MSG.noLots}
                         </div>
                     `;
                 } else {
@@ -255,16 +266,16 @@
                         <table style="margin-top: 0;">
                             <thead>
                                 <tr>
-                                    <th>Fecha Lote</th>
-                                    <th>Fecha Vencimiento</th>
-                                    <th>Cantidad</th>
+                                    <th th:text="#{stock.lots.date}">Batch Date</th>
+                                    <th th:text="#{vencimientos.table.expiry.date}">Expiry Date</th>
+                                    <th th:text="#{common.quantity}">Quantity</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${lotes.map(lote => `
                                     <tr>
                                         <td>${lote.fechaLote || '-'}</td>
-                                        <td>${lote.fechaVencimiento || 'Sin vencimiento'}</td>
+                                        <td>${lote.fechaVencimiento || MSG.noExpiry}</td>
                                         <td><strong>${lote.cantidad}</strong></td>
                                     </tr>
                                 `).join('')}
@@ -275,8 +286,8 @@
 
                 document.getElementById('lotesModal').style.display = 'flex';
             } catch (error) {
-                console.error('Error cargando lotes:', error);
-                alert('Error al cargar lotes del producto');
+                console.error('Error loading lots:', error);
+                alert(MSG.errLots);
             }
         }
 

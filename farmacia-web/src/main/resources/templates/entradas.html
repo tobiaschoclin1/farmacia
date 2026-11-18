@@ -101,7 +101,7 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
+            <div class="lang-bar">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
@@ -115,36 +115,52 @@
                 <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;" th:text="#{entradas.modal.new.title}">New Entry</h3>
 
                 <div style="margin-bottom: 20px;">
-                    <label class="form-label" style="display: block; margin-bottom: 8px;">Usuario</label>
-                    <input type="text" id="usuario" placeholder="Nombre del usuario" value="Sistema Web">
+                    <label class="form-label" style="display: block; margin-bottom: 8px;" th:text="#{entradas.form.user}">User</label>
+                    <input type="text" id="usuario" th:placeholder="#{entradas.user.placeholder}" value="Sistema Web">
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <label class="form-label" style="display: block; margin-bottom: 8px;">Buscar Producto</label>
+                    <label class="form-label" style="display: block; margin-bottom: 8px;" th:text="#{entradas.form.search}">Search product</label>
                     <div style="display: flex; gap: 12px;">
-                        <input type="text" id="search-producto" placeholder="Buscar por nombre o código..." style="flex: 1;">
-                        <button onclick="buscarProducto()">Buscar</button>
+                        <input type="text" id="search-producto" th:placeholder="#{entradas.search.placeholder}" style="flex: 1;">
+                        <button onclick="buscarProducto()" th:text="#{common.search}">Search</button>
                     </div>
                     <div id="search-results" style="margin-top: 12px;"></div>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Productos a Ingresar</h4>
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;" th:text="#{entradas.items.title}">Products to receive</h4>
                     <div id="items-container"></div>
                     <div id="empty-state" style="text-align: center; padding: 40px; color: var(--text-secondary);">
-                        Busca y agrega productos para registrar la entrada
+                        <span th:text="#{entradas.empty.hint}">Search and add products to record the entry</span>
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                    <button onclick="limpiarFormulario()" class="button secondary">Limpiar</button>
-                    <button onclick="registrarEntrada()" class="button success" id="btn-registrar">Registrar Entrada</button>
+                    <button onclick="limpiarFormulario()" class="button secondary" th:text="#{entradas.button.clear}">Clear</button>
+                    <button onclick="registrarEntrada()" class="button success" id="btn-registrar" th:text="#{entradas.button.register}">Register Entry</button>
                 </div>
             </div>
         </main>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const MSG = {
+            code: /*[[#{common.code}]]*/ 'Code',
+            searchNone: /*[[#{entradas.search.none}]]*/ 'No products found',
+            already: /*[[#{entradas.alert.already}]]*/ 'This product is already added',
+            remove: /*[[#{entradas.button.remove}]]*/ 'Remove',
+            batchDate: /*[[#{entradas.field.batch.date}]]*/ 'Batch date',
+            expiryOpt: /*[[#{entradas.field.expiry.optional}]]*/ 'Expiry date (optional)',
+            quantity: /*[[#{common.quantity}]]*/ 'Quantity',
+            emptyAlert: /*[[#{entradas.alert.empty}]]*/ 'You must add at least one product',
+            registering: /*[[#{entradas.button.registering}]]*/ 'Registering...',
+            register: /*[[#{entradas.button.register}]]*/ 'Register Entry',
+            success: /*[[#{entradas.alert.success}]]*/ 'Entry registered successfully',
+            unknown: /*[[#{entradas.alert.error.generic}]]*/ 'Unknown error',
+            errRegister: /*[[#{entradas.alert.error}]]*/ 'Error registering entry'
+        };
+
         let itemsEntrada = [];
 
         async function buscarProducto() {
@@ -157,7 +173,7 @@
 
                 const results = document.getElementById('search-results');
                 if (productos.length === 0) {
-                    results.innerHTML = '<p style="color: var(--text-secondary);">No se encontraron productos</p>';
+                    results.innerHTML = `<p style="color: var(--text-secondary);">${MSG.searchNone}</p>`;
                     return;
                 }
 
@@ -169,20 +185,20 @@
                                  onmouseover="this.style.backgroundColor='var(--surface-hover)'"
                                  onmouseout="this.style.backgroundColor='transparent'">
                                 <strong>${p.nombre}</strong>
-                                ${p.codigoBarra ? `<br><small style="color: var(--text-secondary);">Código: ${p.codigoBarra}</small>` : ''}
+                                ${p.codigoBarra ? `<br><small style="color: var(--text-secondary);">${MSG.code}: ${p.codigoBarra}</small>` : ''}
                             </div>
                         `).join('')}
                     </div>
                 `;
             } catch (error) {
-                console.error('Error buscando productos:', error);
+                console.error('Error searching products:', error);
             }
         }
 
         function agregarProducto(id, nombre) {
             // Verificar si ya existe
             if (itemsEntrada.find(i => i.productoId === id)) {
-                alert('Este producto ya está agregado');
+                alert(MSG.already);
                 return;
             }
 
@@ -216,21 +232,21 @@
                 <div class="card" style="margin-bottom: 12px; padding: 16px; background: var(--surface-hover);">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
                         <strong style="font-size: 16px;">${item.nombre}</strong>
-                        <button onclick="eliminarItem(${index})" class="button danger small">Eliminar</button>
+                        <button onclick="eliminarItem(${index})" class="button danger small">${MSG.remove}</button>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
                         <div>
-                            <label class="form-label" style="display: block; margin-bottom: 4px; font-size: 12px;">Fecha Lote</label>
+                            <label class="form-label" style="display: block; margin-bottom: 4px; font-size: 12px;">${MSG.batchDate}</label>
                             <input type="date" value="${item.fechaLote}"
                                    onchange="itemsEntrada[${index}].fechaLote = this.value">
                         </div>
                         <div>
-                            <label class="form-label" style="display: block; margin-bottom: 4px; font-size: 12px;">Fecha Vencimiento (opcional)</label>
+                            <label class="form-label" style="display: block; margin-bottom: 4px; font-size: 12px;">${MSG.expiryOpt}</label>
                             <input type="date" value="${item.fechaVencimiento}"
                                    onchange="itemsEntrada[${index}].fechaVencimiento = this.value">
                         </div>
                         <div>
-                            <label class="form-label" style="display: block; margin-bottom: 4px; font-size: 12px;">Cantidad</label>
+                            <label class="form-label" style="display: block; margin-bottom: 4px; font-size: 12px;">${MSG.quantity}</label>
                             <input type="number" min="1" value="${item.cantidad}"
                                    onchange="itemsEntrada[${index}].cantidad = parseInt(this.value)">
                         </div>
@@ -253,14 +269,14 @@
 
         async function registrarEntrada() {
             if (itemsEntrada.length === 0) {
-                alert('Debes agregar al menos un producto');
+                alert(MSG.emptyAlert);
                 return;
             }
 
             const usuario = document.getElementById('usuario').value || 'Sistema Web';
             const btn = document.getElementById('btn-registrar');
             btn.disabled = true;
-            btn.textContent = 'Registrando...';
+            btn.textContent = MSG.registering;
 
             try {
                 const response = await fetch('/api/entradas', {
@@ -275,17 +291,17 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert('Entrada registrada exitosamente');
+                    alert(MSG.success);
                     limpiarFormulario();
                 } else {
-                    alert('Error: ' + (result.error || 'Error desconocido'));
+                    alert('Error: ' + (result.error || MSG.unknown));
                 }
             } catch (error) {
-                console.error('Error registrando entrada:', error);
-                alert('Error al registrar entrada');
+                console.error('Error registering entry:', error);
+                alert(MSG.errRegister);
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Registrar Entrada';
+                btn.textContent = MSG.register;
             }
         }
 

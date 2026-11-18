@@ -270,6 +270,13 @@ body {
   transition: margin-left 0.3s ease;
 }
 
+/* Barra del selector de idioma: en flujo normal, no fija */
+.lang-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 32px 0;
+}
+
 .main-content {
   flex: 1;
   padding: 32px;

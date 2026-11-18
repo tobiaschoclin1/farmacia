@@ -101,7 +101,7 @@
         <!-- Contenido Principal -->
         <main class="main-wrapper">
             <!-- Language Selector -->
-            <div style="position: fixed; top: 20px; right: 280px; z-index: 100;">
+            <div class="lang-bar">
                 <div th:replace="~{language-selector :: language-selector}"></div>
             </div>
 
@@ -115,64 +115,82 @@
                 <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;" th:text="#{salidas.modal.new.title}">New Exit</h3>
 
                 <div style="margin-bottom: 20px;">
-                    <label class="form-label" style="display: block; margin-bottom: 8px;">Usuario</label>
-                    <input type="text" id="usuario" placeholder="Nombre del usuario" value="Sistema Web">
+                    <label class="form-label" style="display: block; margin-bottom: 8px;" th:text="#{salidas.form.user}">User</label>
+                    <input type="text" id="usuario" th:placeholder="#{salidas.user.placeholder}" value="Sistema Web">
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <label class="form-label" style="display: block; margin-bottom: 8px;">Motivo</label>
+                    <label class="form-label" style="display: block; margin-bottom: 8px;" th:text="#{salidas.form.reason}">Reason</label>
                     <select id="motivo">
-                        <option value="Venta">Venta</option>
-                        <option value="Consumo interno">Consumo interno</option>
-                        <option value="Donación">Donación</option>
-                        <option value="Ajuste de inventario">Ajuste de inventario</option>
-                        <option value="Producto vencido">Producto vencido</option>
-                        <option value="Otro">Otro</option>
+                        <option value="Venta" th:text="#{salidas.reason.sale}">Sale</option>
+                        <option value="Consumo interno" th:text="#{salidas.reason.internal}">Internal use</option>
+                        <option value="Donación" th:text="#{salidas.reason.donation}">Donation</option>
+                        <option value="Ajuste de inventario" th:text="#{salidas.reason.adjustment}">Inventory adjustment</option>
+                        <option value="Producto vencido" th:text="#{salidas.reason.expired}">Expired product</option>
+                        <option value="Otro" th:text="#{salidas.reason.other}">Other</option>
                     </select>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <label class="form-label" style="display: block; margin-bottom: 8px;">Buscar Producto</label>
+                    <label class="form-label" style="display: block; margin-bottom: 8px;" th:text="#{salidas.form.search}">Search product</label>
                     <div style="display: flex; gap: 12px;">
-                        <input type="text" id="search-producto" placeholder="Buscar por nombre o código..." style="flex: 1;">
-                        <button onclick="buscarProducto()">Buscar</button>
+                        <input type="text" id="search-producto" th:placeholder="#{salidas.search.placeholder}" style="flex: 1;">
+                        <button onclick="buscarProducto()" th:text="#{common.search}">Search</button>
                     </div>
                     <div id="search-results" style="margin-top: 12px;"></div>
                 </div>
 
                 <div id="producto-seleccionado" style="display: none; margin-bottom: 20px;">
                     <div class="card" style="background: var(--primary-soft); border-color: var(--primary);">
-                        <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Producto Seleccionado</h4>
+                        <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;" th:text="#{salidas.selected.title}">Selected product</h4>
                         <p id="producto-nombre" style="font-size: 18px; font-weight: 600; margin-bottom: 8px;"></p>
                         <p id="producto-stock" style="color: var(--text-secondary); margin-bottom: 16px;"></p>
 
                         <div style="display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end;">
                             <div>
-                                <label class="form-label" style="display: block; margin-bottom: 8px;">Cantidad a Retirar</label>
+                                <label class="form-label" style="display: block; margin-bottom: 8px;" th:text="#{salidas.form.quantity}">Quantity to withdraw</label>
                                 <input type="number" id="cantidad" min="1" value="1">
                             </div>
-                            <button onclick="previewSalida()" class="button">Ver Asignación FEFO</button>
+                            <button onclick="previewSalida()" class="button" th:text="#{salidas.button.fefo}">View FEFO allocation</button>
                         </div>
                     </div>
                 </div>
 
                 <div id="preview-fefo" style="display: none; margin-bottom: 20px;">
-                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Asignación Automática (FEFO)</h4>
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;" th:text="#{salidas.fefo.title}">Automatic allocation (FEFO)</h4>
                     <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 13px;">
-                        Los productos se tomarán primero de los lotes que vencen antes
+                        <span th:text="#{salidas.fefo.desc}">Products are taken first from the lots that expire earliest</span>
                     </p>
                     <div id="preview-content"></div>
                 </div>
 
                 <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                    <button onclick="limpiarFormulario()" class="button secondary">Limpiar</button>
-                    <button onclick="registrarSalida()" class="button danger" id="btn-registrar" disabled>Registrar Salida</button>
+                    <button onclick="limpiarFormulario()" class="button secondary" th:text="#{salidas.button.clear}">Clear</button>
+                    <button onclick="registrarSalida()" class="button danger" id="btn-registrar" disabled th:text="#{salidas.button.register}">Register Exit</button>
                 </div>
             </div>
         </main>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        const MSG = {
+            code: /*[[#{common.code}]]*/ 'Code',
+            searchNone: /*[[#{salidas.search.none}]]*/ 'No products found',
+            stockCurrent: /*[[#{salidas.stock.current}]]*/ 'Current stock: {0} {1}',
+            qtyInvalid: /*[[#{salidas.alert.qty}]]*/ 'Enter a valid quantity',
+            selectFirst: /*[[#{salidas.alert.select}]]*/ 'You must select a product and view the FEFO allocation',
+            registering: /*[[#{salidas.button.registering}]]*/ 'Registering...',
+            register: /*[[#{salidas.button.register}]]*/ 'Register Exit',
+            success: /*[[#{salidas.alert.success}]]*/ 'Exit registered successfully',
+            unknown: /*[[#{entradas.alert.error.generic}]]*/ 'Unknown error',
+            errRegister: /*[[#{salidas.alert.error}]]*/ 'Error registering exit',
+            errFefo: /*[[#{salidas.alert.fefo}]]*/ 'Error calculating FEFO allocation',
+            batchDate: /*[[#{stock.lots.date}]]*/ 'Batch date',
+            expiry: /*[[#{vencimientos.table.expiry.date}]]*/ 'Expiry date',
+            take: /*[[#{salidas.table.take}]]*/ 'Quantity to take',
+            noExpiry: /*[[#{stock.lots.no.expiry}]]*/ 'No expiry date'
+        };
+
         let productoSeleccionado = null;
         let previewData = null;
 
@@ -186,7 +204,7 @@
 
                 const results = document.getElementById('search-results');
                 if (productos.length === 0) {
-                    results.innerHTML = '<p style="color: var(--text-secondary);">No se encontraron productos</p>';
+                    results.innerHTML = `<p style="color: var(--text-secondary);">${MSG.searchNone}</p>`;
                     return;
                 }
 
@@ -198,13 +216,13 @@
                                  onmouseover="this.style.backgroundColor='var(--surface-hover)'"
                                  onmouseout="this.style.backgroundColor='transparent'">
                                 <strong>${p.nombre}</strong>
-                                ${p.codigoBarra ? `<br><small style="color: var(--text-secondary);">Código: ${p.codigoBarra}</small>` : ''}
+                                ${p.codigoBarra ? `<br><small style="color: var(--text-secondary);">${MSG.code}: ${p.codigoBarra}</small>` : ''}
                             </div>
                         `).join('')}
                     </div>
                 `;
             } catch (error) {
-                console.error('Error buscando productos:', error);
+                console.error('Error searching products:', error);
             }
         }
 
@@ -219,7 +237,7 @@
 
                 document.getElementById('producto-nombre').textContent = producto.nombre;
                 document.getElementById('producto-stock').textContent =
-                    `Stock actual: ${stockInfo?.stockActual || 0} ${producto.unidadBase}`;
+                    MSG.stockCurrent.replace('{0}', stockInfo?.stockActual || 0).replace('{1}', producto.unidadBase);
 
                 document.getElementById('search-results').innerHTML = '';
                 document.getElementById('search-producto').value = '';
@@ -227,14 +245,14 @@
                 document.getElementById('preview-fefo').style.display = 'none';
                 document.getElementById('btn-registrar').disabled = true;
             } catch (error) {
-                console.error('Error obteniendo stock:', error);
+                console.error('Error fetching stock:', error);
             }
         }
 
         async function previewSalida() {
             const cantidad = parseInt(document.getElementById('cantidad').value);
             if (!cantidad || cantidad < 1) {
-                alert('Ingresa una cantidad válida');
+                alert(MSG.qtyInvalid);
                 return;
             }
 
@@ -256,16 +274,16 @@
                     <table style="margin-top: 0;">
                         <thead>
                             <tr>
-                                <th>Fecha Lote</th>
-                                <th>Fecha Vencimiento</th>
-                                <th>Cantidad a Tomar</th>
+                                <th>${MSG.batchDate}</th>
+                                <th>${MSG.expiry}</th>
+                                <th>${MSG.take}</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${previewData.map(item => `
                                 <tr>
                                     <td>${item.fechaLote || '-'}</td>
-                                    <td>${item.fechaVencimiento || 'Sin vencimiento'}</td>
+                                    <td>${item.fechaVencimiento || MSG.noExpiry}</td>
                                     <td><strong>${item.cantidadBase}</strong></td>
                                 </tr>
                             `).join('')}
@@ -276,14 +294,14 @@
                 document.getElementById('preview-fefo').style.display = 'block';
                 document.getElementById('btn-registrar').disabled = false;
             } catch (error) {
-                console.error('Error en preview:', error);
-                alert('Error al calcular asignación FEFO');
+                console.error('Error in preview:', error);
+                alert(MSG.errFefo);
             }
         }
 
         async function registrarSalida() {
             if (!productoSeleccionado || !previewData) {
-                alert('Debes seleccionar un producto y ver la asignación FEFO');
+                alert(MSG.selectFirst);
                 return;
             }
 
@@ -293,7 +311,7 @@
 
             const btn = document.getElementById('btn-registrar');
             btn.disabled = true;
-            btn.textContent = 'Registrando...';
+            btn.textContent = MSG.registering;
 
             try {
                 const response = await fetch('/api/salidas/fefo', {
@@ -310,17 +328,17 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert('Salida registrada exitosamente');
+                    alert(MSG.success);
                     limpiarFormulario();
                 } else {
-                    alert('Error: ' + (result.error || 'Error desconocido'));
+                    alert('Error: ' + (result.error || MSG.unknown));
                 }
             } catch (error) {
-                console.error('Error registrando salida:', error);
-                alert('Error al registrar salida');
+                console.error('Error registering exit:', error);
+                alert(MSG.errRegister);
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Registrar Salida';
+                btn.textContent = MSG.register;
             }
         }
 
